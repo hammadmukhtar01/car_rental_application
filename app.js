@@ -7,6 +7,7 @@ const path = require('path');
 
 const adminRouter = require('./routes/adminRoute');
 const customerRouter = require('./routes/customerRoute');
+const carRouter = require('./routes/carRoute');
 const AppError = require('./utils/appError');
 const globalErrHandler = require('./controllers/errorController');
 
@@ -39,6 +40,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // routes
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/customer', customerRouter);
+app.use('/api/v1/car', carRouter);
 
 // app.all('*', (req, res, next) => {
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));
