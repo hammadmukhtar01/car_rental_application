@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const isPositive = (value) => value >= 0;
+const positiveNumberValidator = {
+  validator: isPositive,
+  message: '{VALUE} must be a positive number.',
+};
 const carSchema = mongoose.Schema(
   {
     carName: {
@@ -16,7 +21,11 @@ const carSchema = mongoose.Schema(
     //   required: [true, 'must have car images'],
     // },
     category: { type: String, required: [true, 'must have category'] },
-    quantity: { type: Number, required: [true, 'must have quantity'] },
+    quantity: {
+      type: Number,
+      required: [true, 'must have quantity'],
+      validate: positiveNumberValidator,
+    },
     detailsFeatures: {
       type: [String],
       required: [true, 'must have features'],
@@ -39,10 +48,16 @@ const carSchema = mongoose.Schema(
       min: [1, 'must have rating above or equal 1'],
       max: [5, 'must have rating below or equal 5'],
       set: (val) => Math.round(val * 10) / 10,
+      validate: positiveNumberValidator,
     },
     ratingsQuantity: {
       type: Number,
       default: 0,
+    },
+    carAvailabilityStatus: {
+      type: String,
+      enum: ['yes', 'no'],
+      default: 'yes',
     },
     soldItem: {
       type: Number,
@@ -51,10 +66,12 @@ const carSchema = mongoose.Schema(
     salePrice: {
       type: Number,
       required: [true, 'must have number of sale price'],
+      validate: positiveNumberValidator,
     },
     originalPrice: {
       type: Number,
       required: [true, 'must have original price'],
+      validate: positiveNumberValidator,
     },
     description: {
       type: String,

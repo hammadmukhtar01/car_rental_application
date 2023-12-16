@@ -8,14 +8,14 @@ const path = require('path');
 const adminRouter = require('./routes/adminRoute');
 const customerRouter = require('./routes/customerRoute');
 const carRouter = require('./routes/carRoute');
+const additionalBookingRouter = require('./routes/additionalBookingRoute');
+const bookingRouter = require('./routes/bookingRoute');
 const AppError = require('./utils/appError');
 const globalErrHandler = require('./controllers/errorController');
 
 dotenv.config({ path: './config.env' });
 
 const app = express();
-
- 
 
 app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static('uploads'));
@@ -41,6 +41,8 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/customer', customerRouter);
 app.use('/api/v1/car', carRouter);
+app.use('/api/v1/additionalBooking', additionalBookingRouter);
+// app.use('/api/v1/booking', bookingRouter);
 
 // app.all('*', (req, res, next) => {
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));
