@@ -21,6 +21,7 @@ const carSchema = mongoose.Schema(
     //   required: [true, 'must have car images'],
     // },
     category: { type: String, required: [true, 'must have category'] },
+    
     quantity: {
       type: Number,
       required: [true, 'must have quantity'],
@@ -56,10 +57,10 @@ const carSchema = mongoose.Schema(
     },
     carAvailabilityStatus: {
       type: String,
-      enum: ['yes', 'no'],
-      default: 'yes',
+      enum: ['Available', 'Booked'],
+      default: 'Available',
     },
-    soldItem: {
+    bookedItem: {
       type: Number,
       default: 0,
     },

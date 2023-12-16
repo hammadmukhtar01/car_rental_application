@@ -47,6 +47,11 @@ const customerSchema = mongoose.Schema(
       required: [true, 'Must have name of city'],
     },
 
+    creditPoints: {
+      type: Number,
+      default: 0
+    },
+
     passwordChangedAt: {
       type: Date,
     },
@@ -139,6 +144,15 @@ customerSchema.methods.emailResetToken = function () {
     .digest('hex');
 
   return emailConfirm;
+};
+
+customerSchema.methods.updateCreditPoints = function (totalPaidAmount) {
+  const creditPointsToAdd = Math.floor(totalPaidAmount);
+
+  return this.constructor.updateOne(
+    { _id: this._id },
+    { $inc: { creditPoints: creditPointsToAdd } }
+  );
 };
 
 const Customer = mongoose.model('customer', customerSchema);

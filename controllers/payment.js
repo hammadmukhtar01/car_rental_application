@@ -1,14 +1,23 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const AdditionalBooking = require('../models/additionalBookingDetailsModel');
 
 // Create a payment method using a credit card
 exports.payment = async (req, res, next) => {
   let paymentIntent;
-  const amount =
-    req.body.products.reduce(
-      (totalPrice, product) =>
-        totalPrice + product.quantity * product.productPrice,
-      0
-    ) * 100; // in cents
+  const additionalBooking = await AdditionalBooking.findById(
+    req.body.additionalBookingDetailsId
+  );
+
+  if (!additionalBooking) {
+    return next(new AppError('Additional Booking not found', 404));
+  }
+
+  const amount = additionalBooking.totalPrice * 278; // in dollars
+  console.log("Additonal booking total amount in payment is : ", amount)
+  
+  if (amount < 30) {
+    return res.status(400).send({ error: 'Amount too small' });
+  }
 
   try {
     // Create payment method

@@ -42,7 +42,7 @@ app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/customer', customerRouter);
 app.use('/api/v1/car', carRouter);
 app.use('/api/v1/additionalBooking', additionalBookingRouter);
-// app.use('/api/v1/booking', bookingRouter);
+app.use('/api/v1/booking', bookingRouter);
 
 // app.all('*', (req, res, next) => {
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));
