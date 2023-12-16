@@ -25,7 +25,7 @@ router.patch(
 );
 
 router
-  .route('/profile')
+  .route('/profile/:id')
   .get(customerauthController.protect, customerController.getProfile);
 
 module.exports = router;

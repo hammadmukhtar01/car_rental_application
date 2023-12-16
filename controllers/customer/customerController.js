@@ -20,7 +20,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 // };
 
 exports.getProfile = catchAsync(async (req, res, next) => {
-  const user = await Customer.findById(req.user.id);
+  const user = await Customer.findById(req.params.id);
 
   if (!user) {
     return next(new AppError('No user found with such id'));
