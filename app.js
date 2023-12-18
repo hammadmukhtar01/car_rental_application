@@ -10,6 +10,7 @@ const customerRouter = require('./routes/customerRoute');
 const carRouter = require('./routes/carRoute');
 const additionalBookingRouter = require('./routes/additionalBookingRoute');
 const bookingRouter = require('./routes/bookingRoute');
+const reviewRouter = require('./routes/reviewRoute');
 const AppError = require('./utils/appError');
 const globalErrHandler = require('./controllers/errorController');
 
@@ -43,6 +44,7 @@ app.use('/api/v1/customer', customerRouter);
 app.use('/api/v1/car', carRouter);
 app.use('/api/v1/additionalBooking', additionalBookingRouter);
 app.use('/api/v1/booking', bookingRouter);
+app.use('/api/v1/review', reviewRouter);
 
 // app.all('*', (req, res, next) => {
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));

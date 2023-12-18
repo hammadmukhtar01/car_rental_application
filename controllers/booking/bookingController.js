@@ -99,9 +99,8 @@ exports.createBooking = catchAsync(async (req, res, next) => {
 
 // Get all bookings
 exports.getAllBookings = catchAsync(async (req, res, next) => {
-  const bookings = await Booking.find()
-    .populate('customerId', 'name email')
-    .populate('car.carId', 'name price');
+  const bookings = await Booking.find();
+  
   res.status(200).json({
     status: 'Success',
     booking: bookings || `No Car Found`,
