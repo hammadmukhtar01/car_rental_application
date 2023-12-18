@@ -38,6 +38,10 @@ exports.createAdditionalBooking = catchAsync(async (req, res, next) => {
       return next(new AppError('Car not found...'));
     }
 
+    if (car.carAvailabilityStatus === 'Booked') {
+      return next(new AppError('Car is already booked...'));
+    }
+
     const additionalBooking = new AdditionalBooking({
       customerId,
       carId,
@@ -135,7 +139,7 @@ exports.createAdditionalBooking = catchAsync(async (req, res, next) => {
 // Get all bookings
 exports.getAllAdditionalBooking = catchAsync(async (req, res, next) => {
   const additionalBookings = await AdditionalBooking.find();
-   
+
   res.status(200).json({
     status: 'Success',
     additionalBookingDetails: additionalBookings || `No Car Found`,
@@ -162,18 +166,22 @@ exports.getSpecificCustomerAllAdditionalBooking = catchAsync(
 
 // Update booking status By Seller
 exports.updateAdditionalBooking = catchAsync(async (req, res, next) => {
-
   const additionalBooking = await AdditionalBooking.findById(req.params.id);
 
   if (!additionalBooking) {
-    return next(new AppError("Booking not found", 404));
+    return next(new AppError('Booking not found', 404));
   }
-  
-  console.log("1- additionalBooking.customerId.toString() ", additionalBooking.customerId.toString())
-  console.log("2- req.user.id is: ", req.user.id)
+
+  console.log(
+    '1- additionalBooking.customerId.toString() ',
+    additionalBooking.customerId.toString()
+  );
+  console.log('2- req.user.id is: ', req.user.id);
 
   if (additionalBooking.customerId.toString() !== req.user.id) {
-    return next(new AppError("You are not authorized to update this booking", 403));
+    return next(
+      new AppError('You are not authorized to update this booking', 403)
+    );
   }
 
   const additionalBookings = await AdditionalBooking.updateOne(
