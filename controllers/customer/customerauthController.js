@@ -138,7 +138,7 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user1.isVerified)
     return next(new AppError('User is not Verified!', 400));
 
-  signInUser(user1, 201, res, 'Password updated successfully');
+  signInUser(user1, 201, res);
 
   // const token = signInToken(user._id);
   // res.status(201).json({
@@ -304,7 +304,7 @@ exports.updatePass = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
 
-  signInUser(user, 201, res);
+  signInUser(user, 201, res, 'Password updated successfully');
 });
 
 // exports.sendEmailConfirm = catchAsync(async (req, res, next) => {

@@ -20,6 +20,11 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
 
+    cardholderName: {
+      type: String,
+      required: [true, "Must have Card Holder name"]
+    },
+
     bookingno: {
       type: String,
       unique: true,

@@ -21,12 +21,28 @@ const carSchema = mongoose.Schema(
     //   required: [true, 'must have car images'],
     // },
     category: { type: String, required: [true, 'must have category'] },
-    
+
     quantity: {
       type: Number,
       required: [true, 'must have quantity'],
       validate: positiveNumberValidator,
     },
+
+    simpleFeatures: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'SimpleFeature',
+        required: true,
+      },
+    ],
+    complexFeatures: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'ComplexFeature',
+        required: true,
+      },
+    ],
+
     detailsFeatures: {
       type: [String],
       required: [true, 'must have features'],
@@ -43,6 +59,21 @@ const carSchema = mongoose.Schema(
         },
       },
     ],
+
+    additionalCharges: [
+      {
+        name: {
+          type: String,
+          required: [true, 'must have name'],
+        },
+        value: {
+          type: Number,
+          required: [true, 'must have value'],
+        },
+      },
+    ],
+
+    
     ratingsAverage: {
       type: Number,
       default: 4.5,

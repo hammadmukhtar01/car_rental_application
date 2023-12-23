@@ -18,24 +18,13 @@ const additionalDetailsSchema = new mongoose.Schema(
       ref: 'Car',
       required: true,
     },
-    additionalCharges: [
-      {
-        name: {
-          type: String,
-          required: [true, 'must have name'],
-        },
-        value: {
-          type: Number,
-          required: [true, 'must have value'],
-        },
-      },
-    ],
-
-    discountPrice: {
+   
+    noOfBookingDays: {
       type: Number,
-      default: 0,
-      validate: positiveNumberValidator,
+      default: 1,
+      required: [true, "Must have total Number of Bookings"]
     },
+
     totalPrice: {
       type: Number,
       required: true,

@@ -7,7 +7,7 @@ const Factory = require('../factoryHandler');
 
 // Create a new booking
 exports.createBooking = catchAsync(async (req, res, next) => {
-  const { additionalBookingDetailsId } = req.body;
+  const { additionalBookingDetailsId, cardholderName } = req.body;
   console.log('Additional booking id ', additionalBookingDetailsId);
 
   if (!req.paid) {
@@ -24,7 +24,7 @@ exports.createBooking = catchAsync(async (req, res, next) => {
 
   console.log("caar id is ", carId, "custoemr id is", customerId)
 
-  const booking = new Booking({ additionalBookingDetailsId, carId, customerId });
+  const booking = new Booking({ additionalBookingDetailsId, cardholderName, carId, customerId });
   booking.paymentStatus = 'Done';
 
   await booking.save();
