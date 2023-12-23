@@ -8,7 +8,7 @@ router.route('/updateCar/:id').patch(adminauthController.protect, carController.
 
 // router.route('/deleteCar/:id').delete(carController.deleteSingleCar);
 
-router.route('/getAllCars').get(carController.getAllCars);
+router.route('/all').get(carController.getAllCars);
 router.route('/getSingleCar/:id').get(carController.getSingleCar);
 
 

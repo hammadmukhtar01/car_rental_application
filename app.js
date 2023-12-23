@@ -11,6 +11,9 @@ const carRouter = require('./routes/carRoute');
 const additionalBookingRouter = require('./routes/additionalBookingRoute');
 const bookingRouter = require('./routes/bookingRoute');
 const reviewRouter = require('./routes/reviewRoute');
+const simpleFeatureRouter = require('./routes/simpleFeaturesRoute');
+const complexFeatureRouter = require('./routes/complexFeaturesRoute');
+
 const AppError = require('./utils/appError');
 const globalErrHandler = require('./controllers/errorController');
 
@@ -45,6 +48,8 @@ app.use('/api/v1/car', carRouter);
 app.use('/api/v1/additionalBooking', additionalBookingRouter);
 app.use('/api/v1/booking', bookingRouter);
 app.use('/api/v1/review', reviewRouter);
+app.use('/api/v1/simpleFeature', simpleFeatureRouter);
+app.use('/api/v1/complexFeature', complexFeatureRouter);
 
 // app.all('*', (req, res, next) => {
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));

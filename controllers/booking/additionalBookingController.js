@@ -11,9 +11,9 @@ exports.createAdditionalBooking = catchAsync(async (req, res, next) => {
     const {
       customerId,
       carId,
-      additionalCharges,
       discountPrice,
       totalPrice,
+      noOfBookingDays,
       pickupCarDetails,
       returnCarDetails,
       arrivalTime,
@@ -45,7 +45,7 @@ exports.createAdditionalBooking = catchAsync(async (req, res, next) => {
     const additionalBooking = new AdditionalBooking({
       customerId,
       carId,
-      additionalCharges,
+      noOfBookingDays,
       discountPrice,
       totalPrice,
       pickupCarDetails,

@@ -24,9 +24,9 @@ exports.payment = async (req, res, next) => {
     const paymentMethod = await stripe.paymentMethods.create({
       type: 'card',
       card: {
-        number: req.body.cardnumber,
-        exp_month: req.body.expmonth,
-        exp_year: req.body.expyear,
+        number: req.body.cardNumber,
+        exp_month: req.body.expMonth,
+        exp_year: req.body.expYear,
         cvc: req.body.cvc,
       },
     });
