@@ -22,7 +22,13 @@ const bookingSchema = new mongoose.Schema(
 
     cardholderName: {
       type: String,
-      required: [true, "Must have Card Holder name"]
+      required: [true, 'Must have Card Holder name'],
+    },
+
+    totalPrice: {
+      type: Number,
+      required: [true, 'Must have Total Price'],
+      default: 0,
     },
 
     bookingno: {
@@ -47,6 +53,14 @@ const bookingSchema = new mongoose.Schema(
       enum: ['Done', 'Pending'],
       default: 'Pending',
     },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -59,6 +73,8 @@ bookingSchema.pre('save', async function (next) {
     const additionalBookingDetails = await mongoose
       .model('AdditionalBooking')
       .findById(this.additionalBookingDetailsId);
+
+      this.totalPrice = additionalBookingDetails ? additionalBookingDetails.totalPrice : 0;
 
     if (additionalBookingDetails) {
       await mongoose
@@ -99,7 +115,11 @@ bookingSchema.statics.updateCarAvailabilityStatus = async function (carId) {
       .model('Car')
       .updateOne(
         { _id: carId },
-        { $inc: { bookedItem: 1 },  $inc: { quantity: -1 }, carAvailabilityStatus: 'Booked' }
+        {
+          $inc: { bookedItem: 1 },
+          $inc: { quantity: -1 },
+          carAvailabilityStatus: 'Booked',
+        }
       );
   } catch (error) {
     throw new Error(`Error updating car availability status: ${error.message}`);
@@ -113,7 +133,6 @@ bookingSchema.methods.calculateTotalPaidAmount = async function () {
 
   return additionalBookingDetails ? additionalBookingDetails.totalPrice : 0;
 };
-
 
 const Booking = mongoose.model('Booking', bookingSchema);
 

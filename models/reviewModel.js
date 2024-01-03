@@ -28,6 +28,14 @@ const reviewSchema = new mongoose.Schema(
       ref: 'Customer',
       required: [true, 'Must belong to Customer'],
     },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   {
     toJSON: { virtuals: true },

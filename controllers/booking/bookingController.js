@@ -22,9 +22,14 @@ exports.createBooking = catchAsync(async (req, res, next) => {
   }
   const { carId, customerId } = additionalBookingDetails;
 
-  console.log("caar id is ", carId, "custoemr id is", customerId)
+  console.log('car id is ', carId, 'customer id is', customerId);
 
-  const booking = new Booking({ additionalBookingDetailsId, cardholderName, carId, customerId });
+  const booking = new Booking({
+    additionalBookingDetailsId,
+    cardholderName,
+    carId,
+    customerId,
+  });
   booking.paymentStatus = 'Done';
 
   await booking.save();
@@ -100,7 +105,7 @@ exports.createBooking = catchAsync(async (req, res, next) => {
 // Get all bookings
 exports.getAllBookings = catchAsync(async (req, res, next) => {
   const bookings = await Booking.find();
-  
+
   res.status(200).json({
     status: 'Success',
     booking: bookings || `No Car Found`,
@@ -139,7 +144,6 @@ exports.bookingStatus = catchAsync(async (req, res, next) => {
   if (customer) {
     await customer.updateCreditPoints(totalPaidAmount);
     console.log('2 customer id in boooked status update is :', customer);
-
   }
 
   res.status(200).json({
@@ -150,16 +154,14 @@ exports.bookingStatus = catchAsync(async (req, res, next) => {
 });
 
 exports.userSpecificAllBookings = catchAsync(async (req, res, next) => {
-
-  const userId = req.params.id; 
-  const bookings = await Booking.find({ customerId: userId })
+  const userId = req.params.id;
+  const bookings = await Booking.find({ customerId: userId });
 
   res.status(200).json({
     status: 'Success',
     bookings: bookings || `No Bookings Found for the User`,
   });
 });
-
 
 exports.deleteBooking = catchAsync(async (req, res, next) => {
   const bookings = await Booking.findByIdAndDelete(req.params.id);

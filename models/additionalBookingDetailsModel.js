@@ -18,11 +18,11 @@ const additionalDetailsSchema = new mongoose.Schema(
       ref: 'Car',
       required: true,
     },
-   
+
     noOfBookingDays: {
       type: Number,
       default: 1,
-      required: [true, "Must have total Number of Bookings"]
+      required: [true, 'Must have total Number of Bookings'],
     },
 
     totalPrice: {
@@ -78,6 +78,14 @@ const additionalDetailsSchema = new mongoose.Schema(
     comments: {
       type: String,
       required: [true, 'must have comments'],
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
     },
   },
   {
