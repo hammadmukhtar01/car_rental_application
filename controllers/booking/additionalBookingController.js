@@ -38,7 +38,7 @@ exports.createAdditionalBooking = catchAsync(async (req, res, next) => {
       return next(new AppError('Car not found...'));
     }
 
-    if (car.carAvailabilityStatus === 'Booked') {
+    if (car.quantity <= 0 ) {
       return next(new AppError('Car is already booked...'));
     }
 

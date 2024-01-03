@@ -1,4 +1,9 @@
 const mongoose = require('mongoose');
+const SimpleFeature = require('./simpleFeaturesModel');
+const ComplexFeature  = require('./complexFeaturesModel');
+const ExtraFeatures  = require('./extraFeaturesModel');
+const AddOns = require('./addOnsModel');
+const Coupon = require('./couponModel');
 
 const isPositive = (value) => value >= 0;
 const positiveNumberValidator = {
@@ -10,22 +15,35 @@ const carSchema = mongoose.Schema(
     carName: {
       type: String,
       required: [true, 'Must have name of car'],
-      // unique: [true, 'Name must not be used before'],
     },
-    mainCarImage: {
-      type: String,
-      required: [true, 'must have main car images'],
+
+    carImages: {
+      type: [String],
+      required: [true, 'must have car images'],
     },
-    // carImages: {
-    //   type: [String],
-    //   required: [true, 'must have car images'],
-    // },
-    category: { type: String, required: [true, 'must have category'] },
+    carModel: { type: String, required: [true, 'must have car Model'] },
+    carYear: { type: Number, required: [true, 'must have car year'] },
+
+    carAvailabilityDateStart: {
+      type: Date,
+      required: [true, 'must have car availablity start date'],
+    },
+
+    carAvailabilityDateEnd: {
+      type: Date,
+      required: [true, 'must have car availablity end date'], 
+    },
 
     quantity: {
       type: Number,
       required: [true, 'must have quantity'],
+      min: [1, "quantity greater than or equal to 1"],
       validate: positiveNumberValidator,
+    },
+
+    offerValue: {
+      type: Number,
+      default: 0,
     },
 
     simpleFeatures: [
@@ -43,37 +61,30 @@ const carSchema = mongoose.Schema(
       },
     ],
 
-    detailsFeatures: {
-      type: [String],
-      required: [true, 'must have features'],
-    },
-    technicalData: [
+    detailsFeatures: [
       {
-        name: {
-          type: String,
-          required: [true, 'must have technical data name'],
-        },
-        value: {
-          type: String,
-          required: [true, 'must have technical data value'],
-        },
+        type: mongoose.Schema.ObjectId,
+        ref: 'ExtraFeatures',
+        required: true,
       },
     ],
 
-    additionalCharges: [
+    addOnsData: [
       {
-        name: {
-          type: String,
-          required: [true, 'must have name'],
-        },
-        value: {
-          type: Number,
-          required: [true, 'must have value'],
-        },
+        type: mongoose.Schema.ObjectId,
+        ref: 'AddOns',
+        required: true,
       },
     ],
 
-    
+    couponId: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Coupon',
+        default: null,      
+      },
+    ],
+
     ratingsAverage: {
       type: Number,
       default: 4.5,
@@ -137,6 +148,31 @@ const carSchema = mongoose.Schema(
 //   });
 //   next();
 // });
+
+carSchema.pre('save', async function (next) {
+  const validateIds = async (idArray, Model) => {
+    try {
+      const documents = await Model.find({ _id: { $in: idArray } });
+      if (documents.length !== idArray.length) {
+        throw new Error(`Invalid reference in ${Model.modelName}`);
+      }
+    } catch (error) {
+      throw new Error(`Error validating references in ${Model.modelName}: ${error.message}`);
+    }
+  };
+
+  try {
+    await validateIds(this.simpleFeatures, SimpleFeature);
+    await validateIds(this.complexFeatures, ComplexFeature);
+    await validateIds(this.detailsFeatures, ExtraFeatures);
+    await validateIds(this.addOnsData, AddOns);
+    await validateIds(this.couponId, Coupon);
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 const Car = mongoose.model('Car', carSchema);
 

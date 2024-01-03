@@ -13,6 +13,9 @@ const bookingRouter = require('./routes/bookingRoute');
 const reviewRouter = require('./routes/reviewRoute');
 const simpleFeatureRouter = require('./routes/simpleFeaturesRoute');
 const complexFeatureRouter = require('./routes/complexFeaturesRoute');
+const couponRouter = require('./routes/couponRoute');
+const addOnsRouter = require('./routes/addOnsRoute');
+const extraFeaturesRouter = require('./routes/extraFeaturesRoute');
 
 const AppError = require('./utils/appError');
 const globalErrHandler = require('./controllers/errorController');
@@ -38,8 +41,8 @@ app.use((req, res, next) => {
   next();
 });
 // app.use(express.bodyParser({ limit: '50mb' }));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true }));
 
 // routes
 app.use('/api/v1/admin', adminRouter);
@@ -50,6 +53,9 @@ app.use('/api/v1/booking', bookingRouter);
 app.use('/api/v1/review', reviewRouter);
 app.use('/api/v1/simpleFeature', simpleFeatureRouter);
 app.use('/api/v1/complexFeature', complexFeatureRouter);
+app.use('/api/v1/coupon', couponRouter);
+app.use('/api/v1/addOns', addOnsRouter);
+app.use('/api/v1/extraFeatures', extraFeaturesRouter);
 
 // app.all('*', (req, res, next) => {
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));

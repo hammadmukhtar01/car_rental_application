@@ -49,7 +49,7 @@ const customerSchema = mongoose.Schema(
 
     creditPoints: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     passwordChangedAt: {
@@ -60,7 +60,7 @@ const customerSchema = mongoose.Schema(
       default: true,
     },
     emailConfirmToken: String,
-    
+
     confirmEmailToken: String,
 
     role: {
@@ -73,6 +73,14 @@ const customerSchema = mongoose.Schema(
     active: {
       type: Boolean,
       default: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
     },
   },
   {

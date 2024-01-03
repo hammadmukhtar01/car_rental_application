@@ -14,7 +14,7 @@ router.post(
 );
 router.get('/all', bookingController.getAllBookings);
 router.get('/one/:id', bookingController.getonebooking);
-router.get('/:id/userSpecificAllBookings', bookingController.userSpecificAllBookings);
+router.get('/userSpecificAllBookings/:id', bookingController.userSpecificAllBookings);
 
 router.patch(
   '/update/:id',

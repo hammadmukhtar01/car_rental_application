@@ -12,8 +12,8 @@ exports.payment = async (req, res, next) => {
     return next(new AppError('Additional Booking not found', 404));
   }
 
-  const amount = additionalBooking.totalPrice * 278; // in dollars
-  console.log("Additonal booking total amount in payment is : ", amount)
+  const amount = additionalBooking.totalPrice * 78 ; // in dollars
+  console.log("Additonal booking total amount in payment is : ", additionalBooking.totalPrice)
   
   if (amount < 30) {
     return res.status(400).send({ error: 'Amount too small' });
