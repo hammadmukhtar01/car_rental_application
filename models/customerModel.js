@@ -42,10 +42,6 @@ const customerSchema = mongoose.Schema(
         message: 'Passwords are not same',
       },
     },
-    cityName: {
-      type: String,
-      required: [true, 'Must have name of city'],
-    },
 
     creditPoints: {
       type: Number,

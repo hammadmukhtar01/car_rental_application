@@ -1,26 +1,27 @@
-const AppError = require('../utils/appError');
+const handleCastError = (err, res) => {
+  const isMessage = `Invalid ${err.path} route`;
 
-const handleCastError = (err) => {
-  const message = `inavlid ${err.path} route`;
-
-  return new AppError(message);
+  res.status(400).json({
+    status: 'fail',
+    message: isMessage,
+  });
 };
 
-const handlesamenameError = (err) => {
-  const value = err.errmsg.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
-  const message = `inavlid ${value} you wrote already written name!`;
-
-  return new AppError(message);
+const handlesJWTErrorExpired = (res) => {
+  res.status(401).json({
+    status: 'fail',
+    message: 'Your token is expired. Please re-login!',
+  });
 };
 
-const handlesJWTErrorExpired = () =>
-  new AppError('Your token is Expired please re-login!', 401);
+const handlesDBError = (err, res) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const isDBMessage = `Invalid ${errors.join('. ')}`;
 
-const handlesDBError = (err) => {
-  const errors = Object.values.apply(err.errors).map((el) => el.message);
-  const message = `inavlid ${errors.join('. ')} `;
-
-  return new AppError(message);
+  res.status(500).json({
+    status: 'fail',
+    message: isDBMessage,
+  });
 };
 
 const errorDev = (err, res) => {
@@ -32,8 +33,12 @@ const errorDev = (err, res) => {
   });
 };
 
-const handlesJWTError = () =>
-  new AppError('Your token is invalid please re-login!', 401);
+const handlesJWTError = (res) => {
+  res.status(401).json({
+    status: 'fail',
+    message: 'Your token is invalid. Please re-login!',
+  });
+};
 
 const errorProd = (err, res) => {
   if (err.isOperational) {
@@ -42,33 +47,41 @@ const errorProd = (err, res) => {
       message: err.message,
     });
   } else {
-    // console.log('ERROR is here guys', err);
-
     res.status(500).json({
-      status: 'Failed',
-      message: 'Some error occured',
+      status: 'fail',
+      message: err,
     });
   }
 };
 
 module.exports = (err, req, res, next) => {
-  //  console.log(err.stack);
-
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'failed';
 
-  if (process.env.NODE_ENV === 'development') {
-    errorDev(err, res);
-  }
-  if (process.env.NODE_ENV === 'production') {
-    let error = { ...err };
-    if (error.name === 'CastError') error = handleCastError(error);
-    if (error.code === 11000) error = handlesamenameError(error);
-    if (error.name === 'ValidationError') error = handlesDBError(error);
-    if (error.name === 'JsonWebTokenError') error = handlesJWTError(error);
-    if (error.name === 'TokenExpiredError')
-      error = handlesJWTErrorExpired(error);
+  // if (process.env.NODE_ENV === 'development') {
+  //   errorDev(err, res);
+  // }
 
-    errorProd(error, res);
+  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
+    console.log("Node env mode is: ", process.env.NODE_ENV)
+    let error = { ...err };
+
+    switch (error.name) {
+      case 'CastError':
+        handleCastError(error, res);
+        break;
+      case 'ValidationError':
+        handlesDBError(error, res);
+        break;
+      case 'JsonWebTokenError':
+        handlesJWTError(res);
+        break;
+      case 'TokenExpiredError':
+        handlesJWTErrorExpired(res);
+        break;
+      default:
+        errorProd(error, res);
+    }
   }
 };
+

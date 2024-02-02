@@ -23,7 +23,15 @@ exports.getProfile = catchAsync(async (req, res, next) => {
   const user = await Customer.findById(req.params.id);
 
   if (!user) {
-    return next(new AppError('No user found with such id'));
+
+    return next(
+      res.status(404).json({
+        status: 'fail',
+        message: 'No user found with such id',
+      })
+    )
+
+    // return next(new AppError('No user found with such id'));
   }
 
   res.status(200).json({
