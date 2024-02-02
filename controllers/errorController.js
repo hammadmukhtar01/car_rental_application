@@ -17,7 +17,7 @@ const handlesJWTErrorExpired = () =>
   new AppError('Your token is Expired please re-login!', 401);
 
 const handlesDBError = (err) => {
-  const errors = Object.values.apply(err.errors).map((el) => el.message);
+  const errors = Object.values(err.errors).map((el) => el.message);
   const message = `inavlid ${errors.join('. ')} `;
 
   return new AppError(message);
@@ -72,5 +72,3 @@ module.exports = (err, req, res, next) => {
     errorProd(error, res);
   }
 };
-
-

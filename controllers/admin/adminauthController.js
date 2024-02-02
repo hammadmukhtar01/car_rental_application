@@ -3,7 +3,7 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const Admin = require('../../models/adminModel');
 const catchAsync = require('../../utils/catchAsync');
-// const AppError = require('../../utils/appError');
+const AppError = require('../../utils/appError');
 const sendEmail = require('../../utils/email');
 
 const signInToken = function (id) {
@@ -50,19 +50,11 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   if (preadmin.length >= 2)
     return next(
-      res.status(400).json({
-        status: 'fail',
-        message:
-          'Only 2 Admin Account can exist at once you cannot create anymore account',
-      })
+      new AppError(
+        'Only 2 Admin Account can exist at once you cannot create anymore account',
+        400
+      )
     );
-
-  // return next(
-  //   new AppError(
-  //     'Only 2 Admin Account can exist at once you cannot create anymore account',
-  //     400
-  //   )
-  // );
 
   const newUser = await Admin.create({
     name: req.body.name,
@@ -89,15 +81,8 @@ exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(
-      res.status(400).json({
-        status: 'fail',
-        message: 'Account or password is not entered',
-      })
-    );
+    return next(new AppError('Account or password is not entered', 400));
   }
-
-  // return next(new AppError('Account or password is not entered', 400));
 
   // if (user.includes('@')) {
   //   useremail = req.body.user;
@@ -111,24 +96,12 @@ exports.login = catchAsync(async (req, res, next) => {
 
   if (!user1 || !(await user1.correctPassword(password, user1.password))) {
     // console.log('hi');
-    return next(
-      res.status(401).json({
-        status: 'fail',
-        message: 'Account or password is not correct',
-      })
-    );
+    return next(new AppError('Account or password is not correct', 401));
   }
-  // return next(new AppError('Account or password is not correct', 401));
 
   if (!user1.isVerified) {
-    return next(
-      res.status(400).json({
-        status: 'fail',
-        message: 'User is not Verified!',
-      })
-    );
+    return next(new AppError('User is not Verified!', 400));
   }
-  // return next(new AppError('User is not Verified!', 400));
   signInUser(user1, 201, res);
 
   // const token = signInToken(user._id);
@@ -150,15 +123,8 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      res.status(401).json({
-        status: 'fail',
-        message: 'You are not logged in please login to view the data',
-      })
+      new AppError('You are not logged in please login to view the data', 401)
     );
-
-    // return next(
-    //   new AppError('You are not logged in please login to view the data', 401)
-    // );
   }
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
@@ -167,28 +133,14 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!currentUser) {
     return next(
-      res.status(401).json({
-        status: 'fail',
-        message: 'User belonging to this token no longer exist',
-      })
+      new AppError('User belonging to this token no longer exist', 401)
     );
-
-    // return next(
-    //   new AppError('User belonging to this token no longer exist', 401)
-    // );
   }
 
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
-      res.status(401).json({
-        status: 'fail',
-        message: 'User recently changed Password please re login!',
-      })
+      new AppError('User recently changed Password please re login!')
     );
-
-    // return next(
-    //   new AppError('User recently changed Password please re login!')
-    // );
   }
   req.user = currentUser;
 
@@ -199,19 +151,13 @@ exports.restrictTo = function (...roles) {
   return function (req, res, next) {
     if (!roles.includes(req.user.role)) {
       return next(
-        res.status(403).json({
-          status: 'fail',
-          message: 'You do not have persmision to perform this action',
-        })
+        new AppError('You do not have persmision to perform this action')
       );
-
-      // return next(
-      //   new AppError('You do not have persmision to perform this action')
-      // );
     }
     next();
   };
 };
+
 exports.updateStatus = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const { isVerified } = req.body;
@@ -223,14 +169,7 @@ exports.updateStatus = catchAsync(async (req, res, next) => {
   );
 
   if (!admin) {
-    return next(
-      res.status(404).json({
-        status: 'fail',
-        message: 'Admin not found',
-      })
-    );
-
-    // return next(new AppError('Admin not found', 404));
+    return next(new AppError('Admin not found', 404));
   }
 
   res.status(200).json({
@@ -247,15 +186,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(
-      res.status(404).json({
-        status: 'fail',
-        message: 'User with this email not found please enter valid one!',
-      })
+      new AppError('User with this email not found please enter valid one!')
     );
-
-    // return next(
-    //   new AppError('User with this email not found please enter valid one!')
-    // );
   }
 
   const resetToken = user.passwordResetToken();
@@ -264,9 +196,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/admin/resetpassword/${resetToken}`;
+  )}/resetPassword/${resetToken}`;
 
-  const message = `Forgot your password? submit patch request on the given link for the new password ${resetURL} \n If you dont do this please ignore this email`;
+  const message = `Forgot your password? Click the given link below for the new password: ${resetURL} \n If you don\'t do this, please ignore this email`;
 
   try {
     await sendEmail({
@@ -284,15 +216,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     return next(
-      res.status(500).json({
-        status: 'fail',
-        message: 'There was error sending email please try again later!',
-      })
+      new AppError('There was error sending email please try again later!', 500)
     );
-
-    // return next(
-    //   new AppError('There was error sending email please try again later!', 500)
-    // );
   }
 });
 
@@ -308,14 +233,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(
-      res.status(400).json({
-        status: 'fail',
-        message: 'Your token is invalid or expired',
-      })
-    );
-
-    // return next(new AppError('Your token is invalid or expired', 400));
+    return next(new AppError('Your token is invalid or expired', 400));
   }
 
   user.password = req.body.password;
@@ -325,28 +243,14 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   signInUser(user, 201, res);
-  return next(
-    res.status(401).json({
-      status: 'fail',
-      message: 'Password has been Updated',
-    })
-  );
-
-  // return next(new AppError('Password has been Updated', 401));
+  return next(new AppError('Password has been Updated', 401));
 });
 
 exports.updatePass = catchAsync(async (req, res, next) => {
   const user = await Admin.findById(req.user.id).select('+password');
 
   if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
-    return next(
-      res.status(401).json({
-        status: 'fail',
-        message: 'Your current password is incorrect!',
-      })
-    );
-
-    // return next(new AppError('Your current password is incorrect!', 401));
+    return next(new AppError('Your current password is incorrect!', 401));
   }
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
@@ -359,14 +263,9 @@ exports.updatePass = catchAsync(async (req, res, next) => {
 //   const user = await User.findOne({ email: req.user.email });
 
 //   if (!user) {
-
-// return next( res.status(400).json({
-//   status: 'fail',
-//   message: 'Email not found Please enter a valid one!',
-// }))
-
 //     return next(new AppError('Email not found Please enter a valid one!'));
 //   }
+
 //   const EmailToken = user.emailResetToken();
 
 //   await user.save({ validateBeforeSave: false });
@@ -393,12 +292,7 @@ exports.updatePass = catchAsync(async (req, res, next) => {
 //     user.passTokenExpire = undefined;
 //     await user.save({ validateBeforeSave: false });
 
-//     return next( res.status(500).json({
-//   status: 'fail',
-//   message: 'There was error sending email please try again later!',
-// }))
-
-//     return next(
+//    return next(
 //       new AppError('There was error sending email please try again later!', 500)
 //     );
 //   }
@@ -413,12 +307,7 @@ exports.updatePass = catchAsync(async (req, res, next) => {
 //   const user = await User.findOne({
 //     confirmEmailToken: hashedToken,
 //   });
-//   if (!user) {
-// return next( res.status(400).json({
-//   status: 'fail',
-//   message: 'Your token is invalid',
-// }))
-
+//    if (!user) {
 //     return next(new AppError('Your token is invalid', 400));
 //   }
 //   user.phoneNumber = req.params.phoneNumber;

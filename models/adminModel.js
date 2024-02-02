@@ -21,7 +21,7 @@ const adminSchema = mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Must have a password'],
-      minlength: [7, 'must have > 7 length'],
+      minlength: [7, 'Minimum password length must be 7'],
       select: false,
     },
     passwordConfirm: {
