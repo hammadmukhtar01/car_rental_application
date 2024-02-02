@@ -1,4 +1,4 @@
-const Location = require('../../models/locationModel');
+const Location = require('../../models/pickupDropoffLocationsModel');
 const AppError = require('../../utils/appError');
 const catchAsync = require('../../utils/catchAsync');
 const factory = require('../factoryHandler');

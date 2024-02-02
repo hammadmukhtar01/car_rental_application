@@ -17,7 +17,6 @@ const couponRouter = require('./routes/couponRoute');
 const addOnsRouter = require('./routes/addOnsRoute');
 const extraFeaturesRouter = require('./routes/extraFeaturesRoute');
 
-const AppError = require('./utils/appError');
 const globalErrHandler = require('./controllers/errorController');
 
 dotenv.config({ path: './config.env' });
@@ -61,6 +60,6 @@ app.use('/api/v1/extraFeatures', extraFeaturesRouter);
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));
 // });
 
-// app.use(globalErrHandler);
+app.use(globalErrHandler);
 
 module.exports = app;

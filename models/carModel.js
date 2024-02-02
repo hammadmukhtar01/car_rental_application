@@ -22,7 +22,6 @@ const carSchema = mongoose.Schema(
       required: [true, 'must have car images'],
     },
     carModel: { type: String, required: [true, 'must have car Model'] },
-    carYear: { type: Number, required: [true, 'must have car year'] },
 
     carAvailabilityDateStart: {
       type: Date,
@@ -34,12 +33,18 @@ const carSchema = mongoose.Schema(
       required: [true, 'must have car availablity end date'], 
     },
 
-    quantity: {
-      type: Number,
-      required: [true, 'must have quantity'],
-      min: [1, "quantity greater than or equal to 1"],
-      validate: positiveNumberValidator,
+    carType: {
+      type: String,
+      enum: ['Family', 'Intermediate', 'Small'],
+      required: [true, 'must have car type'], 
     },
+
+    // quantity: {
+    //   type: Number,
+    //   required: [true, 'must have quantity'],
+    //   min: [1, "quantity greater than or equal to 1"],
+    //   validate: positiveNumberValidator,
+    // },
 
     offerValue: {
       type: Number,
@@ -69,48 +74,38 @@ const carSchema = mongoose.Schema(
       },
     ],
 
-    addOnsData: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'AddOns',
-        required: true,
-      },
-    ],
-
-    couponId: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Coupon',
-        default: null,      
-      },
-    ],
-
-    ratingsAverage: {
-      type: Number,
-      default: 4.5,
-      min: [1, 'must have rating above or equal 1'],
-      max: [5, 'must have rating below or equal 5'],
-      set: (val) => Math.round(val * 10) / 10,
-      validate: positiveNumberValidator,
-    },
-    ratingsQuantity: {
-      type: Number,
-      default: 0,
-    },
     carAvailabilityStatus: {
       type: String,
       enum: ['Available', 'Booked'],
       default: 'Available',
     },
+
+    // pickupDropoffLocations: [
+    //   {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: 'ComplexFeature',
+    //     required: true,
+    //   },
+    // ],
+
+    // officeShowroomsLocations: [
+    //   {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: 'ComplexFeature',
+    //     required: true,
+    //   },
+    // ],
+
     bookedItem: {
       type: Number,
       default: 0,
     },
-    salePrice: {
-      type: Number,
-      required: [true, 'must have number of sale price'],
-      validate: positiveNumberValidator,
+
+    carColor: {
+      type: String,
+      required: [true, 'must have color'],
     },
+   
     originalPrice: {
       type: Number,
       required: [true, 'must have original price'],

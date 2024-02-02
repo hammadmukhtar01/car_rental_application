@@ -25,7 +25,14 @@ exports.getProfile = catchAsync(async (req, res, next) => {
   const user = await Admin.findById(req.user.id);
 
   if (!user) {
-    return next(new AppError('No user found with such id'));
+    return next(
+      res.status(404).json({
+        status: 'fail',
+        message: 'No user found with such id',
+      })
+    );
+
+    // return next(new AppError('No user found with such id'));
   }
 
   res.status(200).json({
@@ -41,11 +48,19 @@ exports.deleteAdmin = catchAsync(async (req, res, next) => {
 
   if (admin.length === 1)
     return next(
-      new AppError(
-        'You cannot delete yourself while there is not other Admin. Please make another admin inorder to delete yourself',
-        400
-      )
+      res.status(404).json({
+        status: 'fail',
+        message:
+          'You cannot delete yourself while there is not other Admin. Please make another admin in order to delete yourself',
+      })
     );
+
+  // return next(
+  //   new AppError(
+  //     'You cannot delete yourself while there is not other Admin. Please make another admin inorder to delete yourself',
+  //     400
+  //   )
+  // );
 
   await Admin.findByIdAndDelete(req.params.id);
 

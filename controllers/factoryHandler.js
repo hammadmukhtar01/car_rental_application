@@ -1,5 +1,4 @@
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 // const Admin = require('../models/adminModel');
 // const Customer = require('../models/customerModel');
@@ -12,7 +11,11 @@ exports.deleteOne = (Model) =>
     const doc = await Model.findByIdAndDelete(req.params.id);
 
     if (!doc) {
-      return next(new AppError('Document not found with the given Id', 404));
+      return res.status(404).json({
+        status: 'fail',
+        message: 'No doc found with such id',
+      });
+      // return next(new AppError('No doc found with such id'));
     }
     res.status(204).json({
       status: 'success',
@@ -27,7 +30,11 @@ exports.updateOne = (Model) =>
       runValidators: true,
     });
     if (!doc) {
-      return next(new AppError('document with your given id not found!', 400));
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Could not update. No doc found with such id',
+      });
+      // return next(new AppError('No doc found with such id'));
     }
     res.status(201).json({
       status: 'success',
@@ -66,8 +73,11 @@ exports.getOne = (Model, popOpt, popOpt2, popOpt3) =>
     // const doc = await Model.findById(req.params.id).populate('reviews');
 
     if (!doc) {
-      // return res.status(404).json('id not found');
-      return next(new AppError('No doc found with such id'));
+      return res.status(404).json({
+        status: 'fail',
+        message: 'No doc found with such id',
+      });
+      // return next(new AppError('No doc found with such id'));
     }
 
     res.status(200).json({

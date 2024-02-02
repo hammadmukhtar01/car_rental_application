@@ -16,6 +16,14 @@ const addOnsSchema = new mongoose.Schema({
     required: [true, 'must have value of AddOns'],
     validate: positiveNumberValidator,
   },
+  icons: {
+    type: Number,
+    required: [true, 'must have icon of AddOns'],
+  },
+  description: {
+    type: String,
+    required: [true, 'must have description of AddOns'],
+  },
 });
 
 const AddOns = mongoose.model('AddOns', addOnsSchema);
