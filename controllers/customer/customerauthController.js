@@ -294,6 +294,10 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('Your token is invalid or expired', 400));
   }
 
+  if (req.body.password !== req.body.passwordConfirm) {
+    return next(new AppError('Both passwords are not same', 400));
+  }
+
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   user.passResetToken = undefined;
