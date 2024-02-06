@@ -81,11 +81,11 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
   if (customerEmailCheck)
     return next(
-      new AppError('This Email is already registered as customer', 400)
+      new AppError('This email is already registered as customer.', 400)
     );
 
   if (req.body.password !== req.body.passwordConfirm) {
-    return next(new AppError('Both passwords should be same', 400));
+    return next(new AppError('Both passwords should be same !', 400));
   }
 
   const customerPhoneNumCheck = await Customer.findOne({
@@ -93,7 +93,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 
   if (customerPhoneNumCheck) {
-    return next(new AppError('This Phone Number is already registered', 400));
+    return next(new AppError('This phone number is already registered !', 400));
   }
 
   const newUser = await Customer.create({
@@ -128,7 +128,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   if (!email || !password) {
     // console.log('hi');
-    return next(new AppError('Account or password is not entered', 400));
+    return next(new AppError('Email or password is not entered !', 400));
   }
 
   if (email.includes('@')) {
@@ -144,7 +144,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }).select('+password');
   if (!user1 || !(await user1.correctPassword(password, user1.password))) {
     // console.log('hi');
-    return next(new AppError('Email/Phone or password is not correct', 401));
+    return next(new AppError('Email or password is not correct !', 401));
   }
 
   if (!user1.isVerified)
@@ -171,7 +171,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError('You are not logged in please login to view the data', 401)
+      new AppError('You are not logged in please login to view the data !', 401)
     );
   }
 
@@ -181,13 +181,13 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!currentUser) {
     return next(
-      new AppError('User belonging to this token no longer exist', 401)
+      new AppError('User belonging to this token no longer exist !', 401)
     );
   }
 
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
-      new AppError('User recently changed Password please re login!', 401)
+      new AppError('User recently changed Password please re login !', 401)
     );
   }
   req.user = currentUser;
@@ -199,7 +199,7 @@ exports.restrictTo = function (...roles) {
   return function (req, res, next) {
     if (!roles.includes(req.user.role)) {
       return next(
-        new AppError('You do not have persmision to perform this action', 401)
+        new AppError('You do not have persmision to perform this action !' , 401)
       );
     }
     next();
@@ -217,7 +217,7 @@ exports.updateStatus = catchAsync(async (req, res, next) => {
   );
 
   if (!customer) {
-    return next(new AppError('Customer not found', 404));
+    return next(new AppError('Customer not found !', 404));
   }
 
   res.status(200).json({
@@ -234,7 +234,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new AppError('User with this email not found please enter valid one!', 404)
+      new AppError('User with this email not found please enter valid one !', 404)
     );
   }
 
@@ -262,7 +262,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     return next(
-      new AppError('There was error sending email please try again later!', 500)
+      new AppError('There was error sending email please try again later !', 500)
     );
   }
 });
@@ -291,11 +291,11 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new AppError('Your token is invalid or expired', 400));
+    return next(new AppError('Your token is invalid or expired !', 400));
   }
 
   if (req.body.password !== req.body.passwordConfirm) {
-    return next(new AppError('Both passwords are not same', 400));
+    return next(new AppError('Both passwords should be same !', 400));
   }
 
   user.password = req.body.password;
@@ -305,7 +305,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   signInUser(user, 201, res);
-  return next(new AppError('Password has been Updated', 401));
+  return next(new AppError('Password has been Updated !', 401));
 });
 
 exports.updatePass = catchAsync(async (req, res, next) => {
@@ -318,7 +318,7 @@ exports.updatePass = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
 
-  signInUser(user, 201, res, 'Password updated successfully');
+  signInUser(user, 201, res, 'Password updated successfully !');
 });
 
 // exports.sendEmailConfirm = catchAsync(async (req, res, next) => {
