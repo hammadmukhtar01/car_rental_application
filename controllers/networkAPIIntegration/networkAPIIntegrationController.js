@@ -29,7 +29,6 @@ exports.createNetworkPayInvoice = catchAsync(async (req, res, next) => {
 
     console.log('Received body-------:', req.body);
 
-
     const postCreateInvoiceData = {
       firstName,
       lastName,
@@ -39,17 +38,17 @@ exports.createNetworkPayInvoice = catchAsync(async (req, res, next) => {
       invoiceExpiryDate,
       redirectUrl,
       paymentAttempts,
-      items: items.map(item => ({
+      items: items.map((item) => ({
         description: item.description,
         totalPrice: {
           currencyCode: item.totalPrice.currencyCode,
-          value: item.totalPrice.value
+          value: item.totalPrice.value,
         },
-        quantity: item.quantity
+        quantity: item.quantity,
       })),
       total: {
         currencyCode: total.currencyCode,
-        value: total.value
+        value: total.value,
       },
       message,
     };
@@ -72,9 +71,6 @@ exports.createNetworkPayInvoice = catchAsync(async (req, res, next) => {
       },
       data: postCreateInvoiceData,
     });
-    console.log('preeeeeee data is: ', postCreateInvoiceData);
-
-    console.log('Final data is: ', createInvoiceResponse.data);
 
     res.status(200).json({
       status: 'success',
