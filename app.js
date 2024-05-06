@@ -18,6 +18,7 @@ const addOnsRouter = require('./routes/addOnsRoute');
 const extraFeaturesRouter = require('./routes/extraFeaturesRoute');
 const contactUsFormRouter = require('./routes/contactUsFormRoute');
 const networkPaymentAPIRouter = require('./routes/networkAPIIntegrationRoute');
+const leaseNowuserDataRouter = require('./routes/leaseNowuserDataRoute');
 const globalErrHandler = require('./controllers/errorController');
 
 dotenv.config({ path: './config.env' });
@@ -42,7 +43,7 @@ app.use((req, res, next) => {
 });
 // app.use(express.bodyParser({ limit: '50mb' }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
 app.use('/api/v1/admin', adminRouter);
@@ -58,6 +59,7 @@ app.use('/api/v1/addOns', addOnsRouter);
 app.use('/api/v1/extraFeatures', extraFeaturesRouter);
 app.use('/api/v1/contactUsForm', contactUsFormRouter);
 app.use('/api/v1/invoice', networkPaymentAPIRouter);
+app.use('/api/v1/leaseNowData', leaseNowuserDataRouter);
 
 // app.all('*', (req, res, next) => {
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));

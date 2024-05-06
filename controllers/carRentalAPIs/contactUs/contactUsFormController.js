@@ -1,8 +1,8 @@
-const ContactUsForm = require('../../models/contactUsFormModel');
-const catchAsync = require('../../utils/catchAsync');
-const AppError = require('../../utils/appError');
-const sendEmail = require('../../utils/email');
-const factory = require('../factoryHandler');
+const ContactUsForm = require('../../../models/contactUsFormModel');
+const catchAsync = require('../../../utils/catchAsync');
+const AppError = require('../../../utils/appError');
+const sendEmail = require('../../../utils/email');
+const factory = require('../../factoryHandler');
 
 exports.createContactUsRequest = catchAsync(async (req, res, next) => {
   const { fname, lname, email, phoneNumber, comment } = req.body;
