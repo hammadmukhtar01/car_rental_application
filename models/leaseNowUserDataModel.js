@@ -24,15 +24,15 @@ const leaseNowUserData = mongoose.Schema(
     email: {
       type: String,
       required: [true, 'Must have a email'],
-      validate: [validator.isEmail, 'Enter valid email'],
+      validate: [validator.isEmail, 'Email is In-Valid'],
       lowercase: true,
     },
 
     phoneNumber: {
       type: String,
       // match: /^(\()?\d{3}(\))?(-|\s)?\d{7}$/,
-      minlength: [10, 'must have greater or equal to 10 length'],
-      maxlength: [15, 'must have less or equal to 11 length'],
+      minlength: [9, 'Phone Number is In-Valid'],
+      maxlength: [15, 'Phone Number is In-Valid'],
       required: [true, 'Phone Number is missing.'],
     },
 

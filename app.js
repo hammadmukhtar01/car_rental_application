@@ -19,6 +19,7 @@ const extraFeaturesRouter = require('./routes/extraFeaturesRoute');
 const contactUsFormRouter = require('./routes/contactUsFormRoute');
 const networkPaymentAPIRouter = require('./routes/networkAPIIntegrationRoute');
 const leaseNowuserDataRouter = require('./routes/leaseNowuserDataRoute');
+const freeConsultationFormDataRouter = require('./routes/freeConsultationFormRoute');
 const globalErrHandler = require('./controllers/errorController');
 
 dotenv.config({ path: './config.env' });
@@ -60,6 +61,7 @@ app.use('/api/v1/extraFeatures', extraFeaturesRouter);
 app.use('/api/v1/contactUsForm', contactUsFormRouter);
 app.use('/api/v1/invoice', networkPaymentAPIRouter);
 app.use('/api/v1/leaseNowData', leaseNowuserDataRouter);
+app.use('/api/v1/freeConsultationForm', freeConsultationFormDataRouter);
 
 // app.all('*', (req, res, next) => {
 //   next(new AppError(`Cant find the provided route: ${req.originalUrl}`));

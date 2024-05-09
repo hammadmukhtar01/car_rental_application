@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const car = require('./carModel');
-const catchAsync = require('../utils/catchAsync');
 
 const reviewSchema = new mongoose.Schema(
   {

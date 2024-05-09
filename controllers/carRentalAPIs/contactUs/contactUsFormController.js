@@ -17,18 +17,26 @@ exports.createContactUsRequest = catchAsync(async (req, res, next) => {
 
   await newContactUsForm.save();
 
-  const message = `Thank you, ${fname} ${lname}, for Contacting Milele. We will get back to you soon!`;
+  const customerMessage = `Thank you ${fname} ${lname}, for contacting Milele Car Rental team. We will get back to you soon!`;
+  const rentalTeamMessage = `Dear rental team, a new customer just filled the Contact Us form with following details:\n\nCustomer: \t"${fname} ${lname}" \nEmail: \t\t${email}, \nPhone No.: \t${phoneNumber}, \nComments: \t"${comment}"`;
 
   try {
     await sendEmail({
-      email: newContactUsForm.email,
-      subject: 'Milele Car Rental ',
-      message,
+      email: email,
+      subject: 'Contacting Milele Car Rental for Customer Support',
+      message: customerMessage,
     });
+
+    await sendEmail({
+      email: 'hammad.mukhtar@milele.com',
+      subject: 'New Contact Us Form Submited',
+      message: rentalTeamMessage,
+    });
+
     res.status(200).json({
       status: 'success',
       message:
-        'Form submitted successfully. Check your email for further discussion.',
+        'Form submitted successfully. Check your email for confirmation.',
     });
   } catch (err) {
     return next(
