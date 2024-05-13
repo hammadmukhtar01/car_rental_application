@@ -30,9 +30,13 @@ const leaseNowUserData = mongoose.Schema(
 
     phoneNumber: {
       type: String,
-      // match: /^(\()?\d{3}(\))?(-|\s)?\d{7}$/,
+      validate: {
+        validator: function (value) {
+          return validator.isMobilePhone(value, 'any', { strictMode: false });
+        },
+        message: 'Phone Number is In-Valid',
+      },
       minlength: [9, 'Phone Number is In-Valid'],
-      maxlength: [15, 'Phone Number is In-Valid'],
       required: [true, 'Phone Number is missing.'],
     },
 
@@ -42,7 +46,7 @@ const leaseNowUserData = mongoose.Schema(
       maxlength: [500, 'Comment must have less or equal to 500 characters'],
     },
 
-    estimateCarPrice: {
+    estCarPrice: {
       type: Number,
       required: [true, 'Must have est. car price'],
       min: [30000, 'Estimated car price must be at least 30,000'],
@@ -50,7 +54,7 @@ const leaseNowUserData = mongoose.Schema(
       validate: positiveNumberValidator,
     },
 
-    monthDuration: {
+    durationVal: {
       type: Number,
       required: [true, 'Must have number of months'],
       min: [12, 'Duration must be at least 12 months'],
@@ -58,7 +62,7 @@ const leaseNowUserData = mongoose.Schema(
       validate: positiveNumberValidator,
     },
 
-    downPaymentPercentage: {
+    downPaymentVal: {
       type: Number,
       required: [true, 'Must have downpayment percentage'],
       min: [0, 'Down payment percentage cannot be negative'],

@@ -24,9 +24,13 @@ const contactUsFormSchema = mongoose.Schema(
 
     phoneNumber: {
       type: String,
-      // match: /^(\()?\d{3}(\))?(-|\s)?\d{7}$/,
+      validate: {
+        validator: function (value) {
+          return validator.isMobilePhone(value, 'any', { strictMode: false });
+        },
+        message: 'Phone Number is In-Valid',
+      },
       minlength: [9, 'Phone Number is In-Valid'],
-      maxlength: [15, 'Phone Number is In-Valid'],
       required: [true, 'Phone Number is missing.'],
     },
 

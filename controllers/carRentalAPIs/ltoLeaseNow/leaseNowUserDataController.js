@@ -11,9 +11,9 @@ exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
     email,
     phoneNumber,
     comment,
-    estimateCarPrice,
-    monthDuration,
-    downPaymentPercentage,
+    estCarPrice,
+    durationVal,
+    downPaymentVal,
   } = req.body;
 
   const newLeaseNowUserData = await LeaseNowUserData({
@@ -22,9 +22,9 @@ exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
     email,
     phoneNumber,
     comment,
-    estimateCarPrice,
-    monthDuration,
-    downPaymentPercentage,
+    estCarPrice,
+    durationVal,
+    downPaymentVal,
   });
 
   await newLeaseNowUserData.save();
