@@ -37,6 +37,7 @@ exports.createContactUsRequest = catchAsync(async (req, res, next) => {
       status: 'success',
       message:
         'Form submitted successfully. Check your email for confirmation.',
+        data: newContactUsForm
     });
   } catch (err) {
     return next(

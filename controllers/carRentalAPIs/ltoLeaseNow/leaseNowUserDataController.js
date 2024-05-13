@@ -29,17 +29,25 @@ exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
 
   await newLeaseNowUserData.save();
 
-  const message = `Dear ${fname} ${lname}, your leasing details has been sent to our rental department. We will get back to you soon! Thank you!`;
+  const customerMessage = `Dear ${fname} ${lname}, your leasing details has been sent to our rental department. We will get back to you soon! Thank you!`;
+  const teamMessage = `We just received a query from customer for Car Leasing. Details are:\n\nCustomer Name: \t${fname}, ${lname}\nCustomer Email: \t${email}\nPhone Number: \t${phoneNumber}\nComments: \t${comment}
+  \nEstimated Car Price: \t${estCarPrice}\nNo. Of Months: \t${durationVal}\nDown Payment: ${downPaymentVal}%`;
 
   try {
     await sendEmail({
-      email: await newLeaseNowUserData.email,
+      email: email,
       subject: 'Leasing Car Details',
-      message,
+      message: customerMessage,
+    });
+    await sendEmail({
+      email: 'hammad.mukhtar@milele.com',
+      subject: 'Leasing Car Details Form Submited',
+      message: teamMessage,
     });
     res.status(200).json({
       status: 'success',
       message: 'Leasing Car Details Data has been saved successfully.',
+      data: newLeaseNowUserData,
     });
   } catch (err) {
     return next(
