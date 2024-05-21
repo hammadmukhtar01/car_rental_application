@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator'); 
 
 const freeConsultationFormSchema = new mongoose.Schema(
   {
@@ -12,9 +13,8 @@ const freeConsultationFormSchema = new mongoose.Schema(
         validator: function (value) {
           return validator.isMobilePhone(value, 'any', { strictMode: false });
         },
-        message: 'Phone Number is In-Valid',
+        message: 'Phone Number is not valid',
       },
-      minlength: [9, 'Phone Number is In-Valid'],
       required: [true, 'Phone Number is missing.'],
     },
   },

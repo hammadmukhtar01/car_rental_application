@@ -58,12 +58,12 @@ exports.createNetworkPayInvoice = catchAsync(async (req, res, next) => {
     );
 
     console.log(
-      `https://api-gateway.sandbox.ngenius-payments.com/invoices/outlets/${process.env.NETWORK_OUTLET_REF_KEY}/invoice`
+      `https://api-gateway.ngenius-payments.com/invoices/outlets/${process.env.NETWORK_OUTLET_REF_KEY}/invoice`
     );
 
     const createInvoiceResponse = await axios({
       method: 'post',
-      url: `https://api-gateway.sandbox.ngenius-payments.com/invoices/outlets/${process.env.NETWORK_OUTLET_REF_KEY}/invoice`,
+      url: `https://api-gateway.ngenius-payments.com/invoices/outlets/${process.env.NETWORK_OUTLET_REF_KEY}/invoice`,
       headers: {
         authorization: `Bearer ${accessTokenFromNetworkAPI}`,
         'Content-Type': 'application/vnd.ni-invoice.v1+json',
@@ -92,7 +92,7 @@ async function getNetworkPaytAccessToken() {
     );
     const response = await axios({
       method: 'post',
-      url: 'https://api-gateway.sandbox.ngenius-payments.com/identity/auth/access-token',
+      url: 'https://api-gateway.ngenius-payments.com/identity/auth/access-token',
       headers: {
         authorization: `Basic ${process.env.NETWORK_BASIC_AUTH_VALUE}`,
         accept: 'application/vnd.ni-identity.v1+json',
