@@ -6,7 +6,7 @@ dotenv.config({ path: './config.env' });
 
 const http = require('http');
 const { Server } = require('socket.io');
-const app = require('./app');
+const app = require('.api//app1');
 
 const db = process.env.DATABASE;
 mongoose.set('strictQuery', true);
