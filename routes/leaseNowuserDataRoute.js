@@ -4,6 +4,7 @@ const leaseNowUserDataController = require('../controllers/carRentalAPIs/ltoLeas
 
 router.route('/create').post(leaseNowUserDataController.createLeaseNowuserData);
 router.route('/all').get(leaseNowUserDataController.getAllUsersLeasingData);
+router.route('/test').get(leaseNowUserDataController.testingAPI);
 router
   .route('/one/:id')
   .get(leaseNowUserDataController.getSingleUsersLeasingData);

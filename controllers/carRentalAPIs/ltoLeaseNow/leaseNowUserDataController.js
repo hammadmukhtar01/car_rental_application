@@ -59,6 +59,12 @@ exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
   }
 });
 
+exports.testingAPI = catchAsync(async (req, res, next) => {
+  res.status(200).json({
+    message: "This is a test message of API lease Now.",
+  });
+});
+
 exports.getAllUsersLeasingData = catchAsync(async (req, res, next) => {
   try {
     const leaseNowUserDetail = await LeaseNowUserData.find();

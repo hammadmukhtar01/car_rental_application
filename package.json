@@ -1,8 +1,8 @@
 {
-  "name": "milelecarrental",
+  "name": "milele-car-rental-api",
   "version": "1.0.0",
   "description": "learning node, express and mongoDB",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",

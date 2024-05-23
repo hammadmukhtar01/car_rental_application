@@ -5,22 +5,22 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const adminRouter = require('./../routes/adminRoute');
-const customerRouter = require('./../routes/customerRoute');
-const carRouter = require('./../routes/carRoute');
-const additionalBookingRouter = require('./../routes/additionalBookingRoute');
-const bookingRouter = require('./../routes/bookingRoute');
-const reviewRouter = require('./../routes/reviewRoute');
-const simpleFeatureRouter = require('./../routes/simpleFeaturesRoute');
-const complexFeatureRouter = require('./../routes/complexFeaturesRoute');
-const couponRouter = require('./../routes/couponRoute');
-const addOnsRouter = require('./../routes/addOnsRoute');
-const extraFeaturesRouter = require('./../routes/extraFeaturesRoute');
-const contactUsFormRouter = require('./../routes/contactUsFormRoute');
-const networkPaymentAPIRouter = require('./../routes/networkAPIIntegrationRoute');
-const leaseNowuserDataRouter = require('./../routes/leaseNowuserDataRoute');
-const freeConsultationFormDataRouter = require('./../routes/freeConsultationFormRoute');
-const globalErrHandler = require('./../controllers/errorController');
+const adminRouter = require('../routes/adminRoute');
+const customerRouter = require('../routes/customerRoute');
+const carRouter = require('../routes/carRoute');
+const additionalBookingRouter = require('../routes/additionalBookingRoute');
+const bookingRouter = require('../routes/bookingRoute');
+const reviewRouter = require('../routes/reviewRoute');
+const simpleFeatureRouter = require('../routes/simpleFeaturesRoute');
+const complexFeatureRouter = require('../routes/complexFeaturesRoute');
+const couponRouter = require('../routes/couponRoute');
+const addOnsRouter = require('../routes/addOnsRoute');
+const extraFeaturesRouter = require('../routes/extraFeaturesRoute');
+const contactUsFormRouter = require('../routes/contactUsFormRoute');
+const networkPaymentAPIRouter = require('../routes/networkAPIIntegrationRoute');
+const leaseNowuserDataRouter = require('../routes/leaseNowuserDataRoute');
+const freeConsultationFormDataRouter = require('../routes/freeConsultationFormRoute');
+const globalErrHandler = require('../controllers/errorController');
 
 dotenv.config({ path: './../config.env' });
 
@@ -50,7 +50,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use('/api/v1/admin', adminRouter);
 // app.use('/api/v1/customer', customerRouter);
 app.get('/', (req, res) => {
-  res.send('Hello, world!');
+  res.send('Default URL Home Page Backend');
+});
+app.get('/hello', (req, res) => {
+  res.send('Hello, world API!');
 });
 app.use('/api/v1/car', carRouter);
 app.use('/api/v1/additionalBooking', additionalBookingRouter);
