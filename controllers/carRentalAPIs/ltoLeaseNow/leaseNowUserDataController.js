@@ -61,7 +61,7 @@ exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
 
 exports.testingAPI = catchAsync(async (req, res, next) => {
   res.status(200).json({
-    message: "This is a test message of API lease Now.",
+    message: `This is a test message of API lease Now: ${process.env.DATABASE}`,
   });
 });
 
