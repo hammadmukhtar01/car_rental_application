@@ -24,7 +24,7 @@ exports.createCar = catchAsync(async (req, res, next) => {
       });
     }
 
-    const carImagesArray = req.files.map((file) => `http://localhost:8000/utils/uploads/${file.filename}`);
+    const carImagesArray = req.files.map((file) => `https://localhost:8000/utils/uploads/${file.filename}`);
 
     const carData = {
       ...req.body,
