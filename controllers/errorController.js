@@ -72,3 +72,18 @@ module.exports = (err, req, res, next) => {
     errorProd(error, res);
   }
 };
+
+const notFoundHandler = (req, res, next) => {
+  res.status(404).send('404 - Page Not Found');
+};
+
+const globalErrHandler = (err, req, res, next) => {
+  console.error('Global error handler:', err);
+  res.status(500).send('Something went wrong!');
+};
+
+module.exports = {
+  notFoundHandler,
+  globalErrHandler,
+};
+

@@ -6,7 +6,7 @@ const https = require('https');
 const fs = require('fs');
 const { Server } = require('socket.io');
 const express = require('express');
-const enforce = require('express-sslify').HTTPS; // Correct import
+const enforce = require('express-sslify').HTTPS; 
 const app = require('./api/index');
 
 dotenv.config({ path: './config.env' });
@@ -23,7 +23,7 @@ mongoose
 
 // Middleware to enforce HTTPS
 if (process.env.NODE_ENV === 'production') {
-  app.use(enforce({ trustProtoHeader: true })); // Correct usage
+  app.use(enforce({ trustProtoHeader: true })); 
 }
 
 const port = process.env.PORT || 8000;

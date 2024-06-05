@@ -20,7 +20,7 @@ const contactUsFormRouter = require('../routes/contactUsFormRoute');
 const networkPaymentAPIRouter = require('../routes/networkAPIIntegrationRoute');
 const leaseNowuserDataRouter = require('../routes/leaseNowuserDataRoute');
 const freeConsultationFormDataRouter = require('../routes/freeConsultationFormRoute');
-const globalErrHandler = require('../controllers/errorController');
+const { notFoundHandler, globalErrHandler } = require('../controllers/errorController');
 
 dotenv.config({ path: './../config.env' });
 
@@ -73,7 +73,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-
+app.use(notFoundHandler);
 app.use(globalErrHandler);
 
 module.exports = app;
