@@ -20,7 +20,10 @@ const contactUsFormRouter = require('../routes/contactUsFormRoute');
 const networkPaymentAPIRouter = require('../routes/networkAPIIntegrationRoute');
 const leaseNowuserDataRouter = require('../routes/leaseNowuserDataRoute');
 const freeConsultationFormDataRouter = require('../routes/freeConsultationFormRoute');
-const { notFoundHandler, globalErrHandler } = require('../controllers/errorController');
+const {
+  notFoundHandler,
+  globalErrHandler,
+} = require('../controllers/errorController');
 
 dotenv.config({ path: './../config.env' });
 
@@ -71,6 +74,9 @@ app.use('/api/v1/freeConsultationForm', freeConsultationFormDataRouter);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+app.use(function(req, res, next){
+  res.status(404).render('404_error_template', {title: "Sorry, page not found"});
 });
 
 app.use(notFoundHandler);
