@@ -53,7 +53,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use('/api/v1/admin', adminRouter);
 // app.use('/api/v1/customer', customerRouter);
 app.get('/', (req, res) => {
-  res.send('Default URL Home Page Backend');
+  res.send('Default URL Home Page Backend 5: 04 pm (Date: 07-June, 2024)');
 });
 app.get('/hello', (req, res) => {
   res.send('Hello, world API!');
@@ -71,12 +71,16 @@ app.use('/api/v1/contactUsForm', contactUsFormRouter);
 app.use('/api/v1/invoice', networkPaymentAPIRouter);
 app.use('/api/v1/leaseNowData', leaseNowuserDataRouter);
 app.use('/api/v1/freeConsultationForm', freeConsultationFormDataRouter);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
-// });
-app.use(function(req, res, next){
-  res.status(404).render('404_error_template', {title: "Sorry, page not found"});
+// 404 error handler for API routes
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ message: 'API route not found' });
+  }
+  next();
 });
 
 app.use(notFoundHandler);
