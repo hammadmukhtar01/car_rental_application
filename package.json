@@ -40,6 +40,7 @@
     "nodemailer": "^6.7.7",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "serverless-http": "^3.2.0",
     "sharp": "^0.30.7",
     "sitemap": "^8.0.0",
     "slugify": "^1.6.5",

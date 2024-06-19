@@ -4,6 +4,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const path = require('path');
+const serverless = require('serverless-http');
 
 const adminRouter = require('../routes/adminRoute');
 const customerRouter = require('../routes/customerRoute');
@@ -31,6 +32,7 @@ const app = express();
 
 app.use(express.static(__dirname + '/public'));
 app.use('/uploads', express.static('uploads'));
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.use(cors());
 
@@ -72,7 +74,7 @@ app.use('/api/v1/invoice', networkPaymentAPIRouter);
 app.use('/api/v1/leaseNowData', leaseNowuserDataRouter);
 app.use('/api/v1/freeConsultationForm', freeConsultationFormDataRouter);
 
-// 404 error handler for API routes
+
 app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ message: 'API route not found!' });
@@ -80,7 +82,21 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware to serve the React app for all other routes with 404 status
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'milelecarrental.com/', 'index.html'));
+});
+
+// 404 error handler for API routes
+// app.use((req, res, next) => {
+//   if (req.path.startsWith('/api')) {
+//     return res.status(404).json({ message: 'API route not found!' });
+//   }
+//   next();
+// });
+
 app.use(notFoundHandler);
 app.use(globalErrHandler);
 
 module.exports = app;
+module.exports.handler = serverless(app);
