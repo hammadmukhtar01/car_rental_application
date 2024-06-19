@@ -84,9 +84,11 @@ app.use((req, res, next) => {
   }
   next();
 });
-
+app.post('/set-404-status', (req, res) => {
+  res.status(404).end();
+});
 // Middleware to serve the React app for all other routes with 404 status
-app.use((req, res) => {
+app.get('*', (req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'milelecarrental.com', 'index.html'));
 });
 
