@@ -74,7 +74,9 @@ app.use('/api/v1/contactUsForm', contactUsFormRouter);
 app.use('/api/v1/invoice', networkPaymentAPIRouter);
 app.use('/api/v1/leaseNowData', leaseNowuserDataRouter);
 app.use('/api/v1/freeConsultationForm', freeConsultationFormDataRouter);
-
+app.post('/set-404-status', (req, res) => {
+  res.status(404).end();
+});
 
 app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
