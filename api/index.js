@@ -71,14 +71,11 @@ app.use('/api/v1/contactUsForm', contactUsFormRouter);
 app.use('/api/v1/invoice', networkPaymentAPIRouter);
 app.use('/api/v1/leaseNowData', leaseNowuserDataRouter);
 app.use('/api/v1/freeConsultationForm', freeConsultationFormDataRouter);
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
 
 // 404 error handler for API routes
 app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
-    return res.status(404).json({ message: 'API route not found' });
+    return res.status(404).json({ message: 'API route not found!' });
   }
   next();
 });
