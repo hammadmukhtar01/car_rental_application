@@ -78,15 +78,6 @@ app.post('/set-404-status', (req, res) => {
   res.status(404).end();
 });
 
-app.use((req, res, next) => {
-  if (req.path.startsWith('/api')) {
-    return res.status(404).json({ message: 'API route not found!' });
-  }
-  next();
-});
-app.post('/set-404-status', (req, res) => {
-  res.status(404).end();
-});
 // Middleware to serve the React app for all other routes with 404 status
 app.get('*', (req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'milelecarrental.com', 'index.html'));
