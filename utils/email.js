@@ -1,16 +1,12 @@
 const nodemailer = require('nodemailer');
+const fs = require('fs');
+const path = require('path');
 
 const sendMail = async (options) => {
   return new Promise(async (resolve, reject) => {
     try {
       // create transporter
       const transporter = nodemailer.createTransport({
-        // host: process.env.EMAIL_HOSTNAME,
-        // port: process.env.EMAIL_PORT,
-        // auth: {
-        //   user: process.env.EMAIL_USERNAME,
-        //   pass: process.env.EMAIL_PASSWORD,
-        // },
         service: 'gmail',
         secure: false,
         auth: {
@@ -22,13 +18,33 @@ const sendMail = async (options) => {
         },
       });
 
-      // mail options
-      const mailOptions = {
-        from: 'Milele Car Rental <jeehammad840@gmail.com>',
-        to: options.email,
-        subject: options.subject,
-        text: options.message,
-      };
+      let mailOptions;
+
+      if (options.isHtml) {
+        const templatePath = path.join(
+          __dirname,
+          '../templates/emailTemplate.html'
+        );
+        let htmlContent = fs.readFileSync(templatePath, 'utf8');
+
+        htmlContent = htmlContent.replace('{{fname}}', options.fname);
+        htmlContent = htmlContent.replace('{{lname}}', options.lname);
+
+        mailOptions = {
+          from: 'Milele Car Rental <jeehammad840@gmail.com>',
+          to: options.email,
+          subject: options.subject,
+          text: options.message,
+          html: htmlContent,
+        };
+      } else {
+        mailOptions = {
+          from: 'Milele Car Rental <jeehammad840@gmail.com>',
+          to: options.email,
+          subject: options.subject,
+          text: options.message,
+        };
+      }
 
       // send the mail
       const info = await transporter.sendMail(mailOptions);
