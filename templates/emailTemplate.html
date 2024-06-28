@@ -10,70 +10,39 @@
         margin: 0;
         padding: 0;
       }
-      .email-main-container-div {
-        text-align: center;
-      }
-      .email-container {
-        width: 100%;
-        max-width: 600px;
-        margin: 0px auto;
-        background-color: rgba(255, 255, 255, 0.8);
-        background-image: url('./email-bg.png');
-        background-size: cover;
-        background-repeat: no-repeat;
-      }
-
-      p {
-        font-size: 16px;
-        line-height: 1.5;
-      }
-      .email-footer {
-        background-color: #ececec;
-        padding: 10px 0px;
-      }
-      .social-media-container {
-        margin: 30px 0;
-      }
-      .website-urls-integrate {
-        text-align: center;
-        margin: 20px 0;
-      }
-      .hr-divider {
-        width: 30%;
-        border: 1px solid #e87a28;
-        margin: 1rem auto !important;
-        opacity: 1;
-      }
-      .email-body {
-        /* background: url('https://www.milelecarrental.com/static/media/email-bg.png')
-          no-repeat center center / cover; */
-        width: 100%;
-        max-width: 600px;
-      }
-      .website-urls-integrate {
-        text-align: center;
-        margin: 20px 0;
-        display: flex;
-        justify-content: space-evenly;
-      }
     </style>
   </head>
-  <body>
-    <div class="email-main-container-div" style="padding-top: 20px">
-      <div class="email-container">
+  <body
+    style="font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0"
+  >
+    <div style="text-align: center; padding-top: 20px">
+      <div
+        style="
+          width: 100%;
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: rgba(255, 255, 255, 0.8);
+          background-image: url('https://www.milelecarrental.com/static/media/email-bg.png');
+          background-size: cover;
+          background-repeat: no-repeat;
+        "
+      >
         <table
           width="100%"
           cellpadding="0"
           cellspacing="0"
           border="0"
-          class="email-body"
+          style="width: 100%; max-width: 600px"
         >
-          <img
-            src="https://www.milelecarrental.com/static/media/email-logo.png"
-            alt="Milele Car Rental"
-            class="milele-icon"
-            style="width: 100%; max-width: 600px"
-          />
+          <tr>
+            <td style="padding: 0">
+              <img
+                src="https://www.milelecarrental.com/static/media/email-logo.png"
+                alt="Milele Car Rental"
+                style="width: 100%; max-width: 600px"
+              />
+            </td>
+          </tr>
           <tr>
             <td style="padding: 50px">
               <img
@@ -82,16 +51,25 @@
                 width="60"
                 style="vertical-align: middle; margin-right: 8px"
               />
-              <h1>Hi, {{fname}} {{lname}}!</h1>
-              <h3>
+              <h1 style="font-size: 24px">Hi, {{fname}} {{lname}}!</h1>
+              <h3 style="font-size: 18px">
                 We have received your inquiry. You will be contacted by our
                 experts soon!
               </h3>
               <div>
-                <hr class="hr-divider" />
+                <hr
+                  style="
+                    width: 30%;
+                    border: 1px solid #e87a28;
+                    margin: 1rem auto !important;
+                    opacity: 1;
+                  "
+                />
               </div>
-              <p><b>If you cannot wait, Get in touch with us!</b></p>
-              <p>
+              <p style="font-size: 16px; line-height: 1.5">
+                <b>If you cannot wait, Get in touch with us!</b>
+              </p>
+              <p style="font-size: 16px; line-height: 1.5">
                 <a
                   href="https://wa.me/971563298330"
                   style="text-decoration: none; color: inherit"
@@ -114,16 +92,16 @@
                     style="vertical-align: middle; margin-right: 8px"
                   />
                 </a>
-                <b> +971 56 329 8330</b>
+                <b>+971 56 329 8330</b>
               </p>
             </td>
           </tr>
         </table>
       </div>
 
-      <div class="email-footer">
-        <div class="container">
-          <div class="social-media-container">
+      <div style="background-color: #ececec; padding: 10px 0">
+        <div>
+          <div style="margin: 30px 0">
             <a
               href="https://www.facebook.com/milelecarrental/"
               style="text-decoration: none; color: inherit"
@@ -169,30 +147,26 @@
               />
             </a>
           </div>
-          <div class="website-urls-integrate">
-            <table
-              align="center"
-              style="margin: 0 auto; width: 100%; max-width: 400px"
+          <div
+            style="
+              text-align: center;
+              margin: 20px 0;
+              display: flex;
+              justify-content: space-evenly;
+            "
+          >
+            <a
+              href="https://www.milelecarrental.com/"
+              style="color: inherit; margin: 0 10px"
             >
-              <tr>
-                <td style="text-align: center">
-                  <a
-                    href="https://www.milelecarrental.com/"
-                    style="color: inherit; margin: 0 10px"
-                  >
-                    <b>Our Website</b>
-                  </a>
-                </td>
-                <td style="text-align: center">
-                  <a
-                    href="https://www.milelecarrental.com/vehicles"
-                    style="color: inherit; margin: 0 10px"
-                  >
-                    <b>Our Fleet</b>
-                  </a>
-                </td>
-              </tr>
-            </table>
+              <b>Our Website</b>
+            </a>
+            <a
+              href="https://www.milelecarrental.com/vehicles"
+              style="color: inherit; margin: 0 10px"
+            >
+              <b>Our Fleet</b>
+            </a>
           </div>
           <hr
             style="
@@ -202,7 +176,7 @@
               opacity: 1;
             "
           />
-          <p>
+          <p style="font-size: 14px; color: #666">
             <span class="bottom-bar-copyright-text text-white">
               Copyright &copy; 2024. Milele Car rental <br />All Rights
               Reserved.
