@@ -74,22 +74,23 @@ app.use('/api/v1/contactUsForm', contactUsFormRouter);
 app.use('/api/v1/invoice', networkPaymentAPIRouter);
 app.use('/api/v1/leaseNowData', leaseNowuserDataRouter);
 app.use('/api/v1/freeConsultationForm', freeConsultationFormDataRouter);
-app.post('/set-404-status', (req, res) => {
-  res.status(404).end();
-});
+// app.post('/set-404-status', (req, res) => {
+//   res.status(404).end();
+// });
 
 // Middleware to serve the React app for all other routes with 404 status
-app.get('*', (req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'milelecarrental.com', 'index.html'));
+app.use((req, res, next) => {
+  res.status(404).send('Page not found');
 });
 
-// 404 error handler for API routes
-// app.use((req, res, next) => {
-//   if (req.path.startsWith('/api')) {
-//     return res.status(404).json({ message: 'API route not found!' });
-//   }
-//   next();
-// });
+app.get('*', (req, res) => {
+  if (req.accepts('html')) {
+    res.status(404).sendFile(path.resolve(__dirname, 'milelecarrental.com', 'index.html'));
+  } else {
+    res.status(404).send('404 Not Found');
+  }
+});
+
 
 app.use(notFoundHandler);
 app.use(globalErrHandler);
