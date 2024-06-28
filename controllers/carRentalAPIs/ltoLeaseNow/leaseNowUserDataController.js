@@ -40,7 +40,7 @@ exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
       message: customerMessage,
     });
     await sendEmail({
-      email: 'hammad.mukhtar@milele.com',
+      email: ['hammad.mukhtar@milele.com', 'milelecarrental@gmail.com'],
       subject: 'Leasing Car Details Form Submited',
       message: teamMessage,
     });
