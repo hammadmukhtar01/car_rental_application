@@ -18,12 +18,12 @@ exports.createFreeConsultationForm = catchAsync(async (req, res, next) => {
 
   try {
     await sendEmail({
-      email: 'hammad.mukhtar@milele.com',
+      email: ['hammad.mukhtar@milele.com', 'milelecarrental@gmail.com'],
       subject: 'New Consultation Inquiry',
       message,
       fname: 'Rental',
       lname: 'Team',
-      isHtml: false, 
+      isHtml: false,
     });
     res.status(200).json({
       status: 'success',

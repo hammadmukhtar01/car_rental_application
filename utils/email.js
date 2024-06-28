@@ -10,8 +10,8 @@ const sendMail = async (options) => {
         service: 'gmail',
         secure: false,
         auth: {
-          user: 'jeehammad840@gmail.com',
-          pass: 'nsqetmujpktomnlv',
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
         },
         tls: {
           rejectUnauthorized: false,
@@ -31,18 +31,26 @@ const sendMail = async (options) => {
         htmlContent = htmlContent.replace('{{lname}}', options.lname);
 
         mailOptions = {
-          from: 'Milele Car Rental <jeehammad840@gmail.com>',
+          from: `Milele Car Rental <${process.env.EMAIL_USERNAME}>`,
           to: options.email,
           subject: options.subject,
           text: options.message,
           html: htmlContent,
+          headers: {
+            'List-Unsubscribe':
+              '<mailto:unsubscribe@milelecarrental.com?subject=unsubscribe>',
+          },
         };
       } else {
         mailOptions = {
-          from: 'Milele Car Rental <jeehammad840@gmail.com>',
+          from: `Milele Car Rental <${process.env.EMAIL_USERNAME}>`,
           to: options.email,
           subject: options.subject,
           text: options.message,
+          headers: {
+            'List-Unsubscribe':
+              '<mailto:unsubscribe@milelecarrental.com?subject=unsubscribe>',
+          },
         };
       }
 
