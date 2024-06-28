@@ -32,7 +32,7 @@ exports.createContactUsRequest = catchAsync(async (req, res, next) => {
 
     await sendEmail({
       email: ['hammad.mukhtar@milele.com', 'hammadmukhtar1122@gmail.com'],
-      subject: 'New Consultation Inquiry',
+      subject: 'New Contact Us Inquiry',
       message: rentalTeamMessage,
       fname: 'Rental',
       lname: 'Team',
