@@ -1,0 +1,90 @@
+<!-- 404.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Error 404. | (Page Not Found with this url)!</title>
+    <meta
+      name="description"
+      content="Affordable and convenient car rental services. Choose from a wide range of vehicles to suit your needs. Book online now for special offers."
+    />
+    <meta name="keywords" content="keywords" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+      }
+      .error-404-page {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+      .error-404-div-container {
+        text-align: center;
+        margin-top: 3rem;
+        border: 1px solid white;
+        border-radius: 10px;
+        background-color: rgba(227, 227, 227, 0.575);
+        max-width: fit-content;
+        padding: 20px;
+      }
+      .error-404-icon {
+        width: 15%;
+        padding: 0px 0px 20px 0px;
+      }
+      .error-404-page-small-line {
+        width: 15%;
+        border: 1px solid #e87a28;
+        margin: 1rem auto !important;
+        opacity: 1;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .middle {
+        background-color: #e87a28;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .middle:hover {
+        background-color: #d27625;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Add your header component here -->
+    <div class="error-404-page">
+      <div class="error-404-div-container">
+        <h3><b>Error</b></h3>
+        <div class="icon">
+          <img
+            src="https://www.milelecarrental.com/static/media/PageNotFound.png"
+            alt="Error 404"
+            class="error-404-icon"
+          />
+        </div>
+        <p>Page URL Not Found!</p>
+        <div>
+          <hr class="error-404-page-small-line" />
+        </div>
+      </div>
+      <br />
+      <div class="text-center">
+        <button
+          onclick='window.location.href="https://www.milelecarrental.com/"'
+          class="middle"
+          id="return-home-button-booking-success-page"
+        >
+          <span class="animate-button btn4"><b>Back to home</b></span>
+        </button>
+      </div>
+    </div>
+    <!-- Add your footer component here -->
+  </body>
+</html>
