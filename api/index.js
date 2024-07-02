@@ -78,21 +78,11 @@ app.use('/api/v1/freeConsultationForm', freeConsultationFormDataRouter);
 //   res.status(404).end();
 // });
 
-// Middleware to serve the React app for all other routes with 404 status
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ error: 'API route not found' });
+app.use((req, res, next) => {
+  res
+    .status(404)
+    .sendFile(path.join(__dirname, 'milelecarrental.com', 'pageNotFound.html'));
 });
-
-// Middleware to serve the React app for all other routes
-app.get('*', (req, res) => {
-  if (req.accepts('html')) {
-    res.status(404).sendFile(path.resolve(__dirname, 'milelecarrental.com', 'index.html'));
-  } else {
-    res.status(404).json({ error: 'Page not found' });
-  }
-});
-
-
 
 app.use(notFoundHandler);
 app.use(globalErrHandler);
