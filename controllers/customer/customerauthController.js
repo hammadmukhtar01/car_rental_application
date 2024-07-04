@@ -32,7 +32,8 @@ const signInUser = (user, statuscode, res, successMessage) => {
     status: 'success',
     token,
     data: {
-      name: user.name,
+      fName: user.fName,
+      lName: user.lName,
       role: user.role,
       status: user.isVerified,
       _id: user._id,
@@ -62,7 +63,7 @@ const signInNewUser = (user, statuscode, res) => {
 };
 
 const sendThankYouEmail = async (user) => {
-  const message = `Thank you for signing up, ${user.name}! We appreciate your registration with Milele Car Rental System. \nClick the below link to visit our website:\nhttps://milelecarrental.com`;
+  const message = `Thank you for signing up, ${user.fName} ${user.lName}! We appreciate your registration with Milele Car Rental System. \nClick the below link to visit our website:\nhttps://www.milelecarrental.com`;
 
   try {
     await sendEmail({
@@ -76,49 +77,68 @@ const sendThankYouEmail = async (user) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const customerEmailCheck = await Customer.findOne({
-    email: req.body.email,
-  });
-  if (customerEmailCheck)
-    return next(
-      new AppError('This email is already registered as customer.', 400)
-    );
+  try {
+    const customerEmailCheck = await Customer.findOne({
+      email: req.body.email,
+    });
+    if (customerEmailCheck) {
+      return next(
+        new AppError('This email is already registered as customer.', 400),
+        res.status(400).json({
+          status: 'failed',
+          message: 'This email is already registered as customer.',
+        })
+      );
+    }
 
-  if (req.body.password !== req.body.passwordConfirm) {
-    return next(new AppError('Both passwords should be same !', 400));
+    if (req.body.password !== req.body.passwordConfirm) {
+      console.log('different passwords');
+
+      return next(
+        new AppError('Passwords do not match!', 400),
+        res.status(400).json({
+          status: 'failed',
+          message: 'Passwords do not match!',
+        })
+      );
+    }
+
+    // const customerPhoneNumCheck = await Customer.findOne({
+    //   phoneNumber: req.body.phoneNumber,
+    // });
+
+    // if (customerPhoneNumCheck) {
+    //   return next(new AppError('This phone number is already registered !', 400));
+    // }
+
+    const newUser = await Customer.create({
+      fName: req.body.fName,
+      lName: req.body.lName,
+      email: req.body.email,
+      phoneNumber: req.body.phoneNumber,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      nationality: req.body.nationality,
+      speedCustomerId: req.body.speedCustomerId,
+    });
+
+    await sendThankYouEmail(newUser);
+    req.user = newUser;
+    req.token = signInNewUser(newUser._id, 201, res);
+
+    next();
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        newUser,
+      },
+      message:
+        'Thank you for signing up! Check your email for a welcome message.',
+    });
+  } catch (err) {
+    next(err);
   }
-
-  const customerPhoneNumCheck = await Customer.findOne({
-    phoneNumber: req.body.phoneNumber,
-  });
-
-  if (customerPhoneNumCheck) {
-    return next(new AppError('This phone number is already registered !', 400));
-  }
-
-  const newUser = await Customer.create({
-    name: req.body.name,
-    email: req.body.email,
-    phoneNumber: req.body.phoneNumber,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    location: req.body.location,
-  });
-
-  await sendThankYouEmail(newUser);
-  req.user = newUser;
-  req.token = signInNewUser(newUser._id, 201, res);
-
-  next();
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      newUser,
-    },
-    message:
-      'Thank you for signing up! Check your email for a welcome message.',
-  });
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -199,7 +219,7 @@ exports.restrictTo = function (...roles) {
   return function (req, res, next) {
     if (!roles.includes(req.user.role)) {
       return next(
-        new AppError('You do not have persmision to perform this action !' , 401)
+        new AppError('You do not have persmision to perform this action !', 401)
       );
     }
     next();
@@ -234,7 +254,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new AppError('User with this email not found please enter valid one !', 404)
+      new AppError(
+        'User with this email not found please enter valid one !',
+        404
+      )
     );
   }
 
@@ -262,7 +285,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     return next(
-      new AppError('There was error sending email please try again later !', 500)
+      new AppError(
+        'There was error sending email please try again later !',
+        500
+      )
     );
   }
 });
