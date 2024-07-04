@@ -5,12 +5,20 @@ const bcrypt = require('bcrypt');
 
 const customerSchema = mongoose.Schema(
   {
-    name: {
+    fName: {
       type: String,
       minlength: [3, 'must have greater or equal to 3 length'],
       maxlength: [50, 'must have less or equal to 50 length'],
-      required: [true, 'Must have a name'],
+      required: [true, 'Must have a first name'],
     },
+
+    lName: {
+      type: String,
+      minlength: [3, 'must have greater or equal to 3 length'],
+      maxlength: [50, 'must have less or equal to 50 length'],
+      required: [true, 'Must have a last name'],
+    },
+
     email: {
       type: String,
       required: [true, 'Must have a email'],
@@ -44,6 +52,18 @@ const customerSchema = mongoose.Schema(
         },
         message: 'Passwords are not same',
       },
+    },
+
+    nationality: {
+      type: String,
+      minlength: [3, 'must have greater or equal to 3 length'],
+      maxlength: [50, 'must have less or equal to 50 length'],
+      required: [true, 'Must have a name'],
+    },
+
+    speedCustomerId: {
+      type: Number,
+      default: 0,
     },
 
     creditPoints: {

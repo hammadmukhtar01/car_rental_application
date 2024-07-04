@@ -54,13 +54,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
 // app.use('/api/v1/admin', adminRouter);
-// app.use('/api/v1/customer', customerRouter);
 app.get('/', (req, res) => {
   res.send('Default URL Home Page Backend 5: 04 pm (Date: 07-June, 2024)');
 });
 app.get('/hello', (req, res) => {
   res.send('Hello, world API!');
 });
+app.use('/api/v1/customer', customerRouter);
 app.use('/api/v1/car', carRouter);
 app.use('/api/v1/additionalBooking', additionalBookingRouter);
 app.use('/api/v1/booking', bookingRouter);
@@ -83,9 +83,6 @@ app.use((req, res, next) => {
     .status(404)
     .sendFile(path.join(__dirname, 'milelecarrental.com', 'pageNotFound.html'));
 });
-
-app.use(notFoundHandler);
-app.use(globalErrHandler);
 
 module.exports = app;
 module.exports.handler = serverless(app);
