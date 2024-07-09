@@ -36,6 +36,7 @@ const signInUser = (user, statuscode, res, successMessage) => {
       lName: user.lName,
       role: user.role,
       status: user.isVerified,
+      customerIdFromSpeed: user.speedCustomerId,
       _id: user._id,
     },
   };
@@ -103,6 +104,18 @@ exports.signup = catchAsync(async (req, res, next) => {
       );
     }
 
+    if (!req.body.nationality) {
+      console.log('Please Choose Nationality.');
+
+      return next(
+        new AppError('Please Choose Nationality.', 400),
+        res.status(400).json({
+          status: 'failed',
+          message: 'Please Choose Nationality.',
+        })
+      );
+    }
+
     // const customerPhoneNumCheck = await Customer.findOne({
     //   phoneNumber: req.body.phoneNumber,
     // });
@@ -142,13 +155,17 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res, next) => {
-  let useremail;
-  let phoneNumber;
   const { email, password } = req.body;
 
   if (!email || !password) {
     // console.log('hi');
-    return next(new AppError('Email or password is not entered !', 400));
+    return next(
+      new AppError('Email or password is not entered!', 400),
+      // res.status(400).json({
+      //   status: 'failed',
+      //   message: 'Email or password is not entered!',
+      // })
+    );
   }
 
   if (email.includes('@')) {
@@ -157,14 +174,21 @@ exports.login = catchAsync(async (req, res, next) => {
     phoneNumber = req.body.email;
   }
 
-  // const user = await User.findOne({ email }).select('+password');
+  const user1 = await Customer.findOne({ email }).select('+password');
 
-  const user1 = await Customer.findOne({
-    $or: [{ email: useremail }, { phoneNumber: phoneNumber }],
-  }).select('+password');
+  // const user1 = await Customer.findOne({
+  //   $or: [{ email: useremail }, { phoneNumber: phoneNumber }],
+  // }).select('+password');
+
   if (!user1 || !(await user1.correctPassword(password, user1.password))) {
     // console.log('hi');
-    return next(new AppError('Email or password is not correct !', 401));
+    return next(
+      new AppError('Email or password is not correct!', 401),
+      res.status(401).json({
+        status: 'failed',
+        message: 'Email or password is not correct!',
+      })
+    );
   }
 
   if (!user1.isVerified)
