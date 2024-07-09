@@ -35,7 +35,6 @@ const customerSchema = mongoose.Schema(
         message: 'Phone Number is not valid',
       },
       required: [true, 'Phone Number is missing.'],
-      unique: [true, 'Phone number must not be used before'],
     },
     password: {
       type: String,
@@ -58,12 +57,12 @@ const customerSchema = mongoose.Schema(
       type: String,
       minlength: [3, 'must have greater or equal to 3 length'],
       maxlength: [50, 'must have less or equal to 50 length'],
-      required: [true, 'Must have a name'],
+      required: [true, 'Must have a nationality'],
     },
 
     speedCustomerId: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: null,
     },
 
     creditPoints: {
