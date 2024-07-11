@@ -46,8 +46,8 @@ exports.payment = async (req, res, next) => {
     req.body.payementId = paymentIntent.id;
     next();
   } catch (error) {
-    // Payment failed
-    console.log('Payment failed:', error);
-    return res.status(500).send({ error: 'Payment failed' });
+    // Payment fail
+    console.log('Payment fail:', error);
+    return res.status(500).send({ error: 'Payment fail' });
   }
 };

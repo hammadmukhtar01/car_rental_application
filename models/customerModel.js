@@ -54,14 +54,18 @@ const customerSchema = mongoose.Schema(
     },
 
     nationality: {
-      type: String,
-      minlength: [3, 'must have greater or equal to 3 length'],
-      maxlength: [50, 'must have less or equal to 50 length'],
-      required: [true, 'Must have a nationality'],
+      label: {
+        type: String,
+        required: [true, 'Must have a nationality label'],
+      },
+      value: {
+        type: String,
+        required: [true, 'Must have a nationality value'],
+      },
     },
 
-    speedCustomerId: {
-      type: String,
+    customerIdFromSpeed: {
+      type: Number,
       default: null,
     },
 

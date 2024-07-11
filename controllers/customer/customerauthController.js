@@ -36,7 +36,7 @@ const signInUser = (user, statuscode, res, successMessage) => {
       lName: user.lName,
       role: user.role,
       status: user.isVerified,
-      customerIdFromSpeed: user.speedCustomerId,
+      customerIdFromSpeed: user.customerIdFromSpeed,
       _id: user._id,
     },
   };
@@ -73,7 +73,7 @@ const sendThankYouEmail = async (user) => {
       message,
     });
   } catch (err) {
-    AppError('Error sending thank-you email:', err);
+    new AppError('Error sending thank-you email:', err);
   }
 };
 
@@ -83,10 +83,12 @@ exports.signup = catchAsync(async (req, res, next) => {
       email: req.body.email,
     });
     if (customerEmailCheck) {
+      console.log('dThis email is already registered asds');
+      
       return next(
         new AppError('This email is already registered as customer.', 400),
         res.status(400).json({
-          status: 'failed',
+          status: 'fail',
           message: 'This email is already registered as customer.',
         })
       );
@@ -96,9 +98,9 @@ exports.signup = catchAsync(async (req, res, next) => {
       console.log('different passwords');
 
       return next(
-        new AppError('Passwords do not match!', 400),
+        new AppError('Passwords do not match', 400),
         res.status(400).json({
-          status: 'failed',
+          status: 'fail',
           message: 'Passwords do not match!',
         })
       );
@@ -110,7 +112,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       return next(
         new AppError('Please Choose Nationality.', 400),
         res.status(400).json({
-          status: 'failed',
+          status: 'fail',
           message: 'Please Choose Nationality.',
         })
       );
@@ -132,23 +134,21 @@ exports.signup = catchAsync(async (req, res, next) => {
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
       nationality: req.body.nationality,
-      speedCustomerId: req.body.speedCustomerId,
+      customerIdFromSpeed: req.body.customerIdFromSpeed,
     });
 
     await sendThankYouEmail(newUser);
-    req.user = newUser;
-    req.token = signInNewUser(newUser._id, 201, res);
 
-    next();
+    signInNewUser(newUser, 201, res, 'Logged-in successfully!');
 
-    res.status(201).json({
-      status: 'success',
-      data: {
-        newUser,
-      },
-      message:
-        'Thank you for signing up! Check your email for a welcome message.',
-    });
+    // res.status(201).json({
+    //   status: 'success',
+    //   data: {
+    //     newUser,
+    //   },
+    //   message:
+    //     'Thank you for signing up! Check your email for a welcome message.',
+    // });
   } catch (err) {
     next(err);
   }
@@ -161,10 +161,10 @@ exports.login = catchAsync(async (req, res, next) => {
     // console.log('hi');
     return next(
       new AppError('Email or password is not entered!', 400),
-      // res.status(400).json({
-      //   status: 'failed',
-      //   message: 'Email or password is not entered!',
-      // })
+      res.status(400).json({
+        status: 'fail',
+        message: 'Email or password is not entered!',
+      })
     );
   }
 
@@ -185,14 +185,14 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(
       new AppError('Email or password is not correct!', 401),
       res.status(401).json({
-        status: 'failed',
+        status: 'fail',
         message: 'Email or password is not correct!',
       })
     );
   }
 
-  if (!user1.isVerified)
-    return next(new AppError('User is not Verified!', 400));
+  // if (!user1.isVerified)
+  //   return next(new AppError('User is not Verified!', 400));
 
   signInUser(user1, 201, res);
 
@@ -215,7 +215,11 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError('You are not logged in please login to view the data !', 401)
+      new AppError('You are not logged in please login to view the data!', 401),
+      res.status(401).json({
+        status: 'fail',
+        message: 'You are not logged in please login to view the data!',
+      })
     );
   }
 
@@ -225,13 +229,21 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!currentUser) {
     return next(
-      new AppError('User belonging to this token no longer exist !', 401)
+      new AppError('User belonging to this token no longer exist !', 401),
+      res.status(401).json({
+        status: 'fail',
+        message: 'User belonging to this token no longer exist !',
+      })
     );
   }
 
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
-      new AppError('User recently changed Password please re login !', 401)
+      new AppError('User recently changed Password please re login !', 401),
+      res.status(401).json({
+        status: 'fail',
+        message: 'User recently changed Password please re login !',
+      })
     );
   }
   req.user = currentUser;
@@ -243,7 +255,14 @@ exports.restrictTo = function (...roles) {
   return function (req, res, next) {
     if (!roles.includes(req.user.role)) {
       return next(
-        new AppError('You do not have persmision to perform this action !', 401)
+        new AppError(
+          'You do not have persmision to perform this action !',
+          401
+        ),
+        res.status(401).json({
+          status: 'fail',
+          message: 'This You do not have persmision to perform this action !',
+        })
       );
     }
     next();
@@ -261,7 +280,13 @@ exports.updateStatus = catchAsync(async (req, res, next) => {
   );
 
   if (!customer) {
-    return next(new AppError('Customer not found !', 404));
+    return next(
+      new AppError('Customer not found !', 404),
+      res.status(404).json({
+        status: 'fail',
+        message: 'Customer not found !',
+      })
+    );
   }
 
   res.status(200).json({
@@ -273,15 +298,62 @@ exports.updateStatus = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updateCustomerProfile = catchAsync(async (req, res, next) => {
+  try {
+    const updatedCustomerData = await Customer.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedCustomerData) {
+      return next(
+        new AppError('Customer with the given id does not found!', 404),
+
+        res.status(404).json({
+          status: 'fail',
+          message: 'Customer with the given id does not found!',
+        })
+      );
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: updatedCustomerData,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(
+      new AppError('Error while updating the customer details: ', error),
+
+      res.status(204).json({
+        status: 'fail',
+        message: `Error while updating the customer details: ${error}`,
+      })
+    );
+  }
+});
+
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const user = await Customer.findOne({ email: req.body.email });
 
   if (!user) {
     return next(
+      // new AppError(
+      //   'User with this email not found please enter valid one !',
+      //   404
+      // )
       new AppError(
         'User with this email not found please enter valid one !',
         404
-      )
+      ),
+      res.status(404).json({
+        status: 'fail',
+        message: 'User with this email not found please enter valid one !',
+      })
     );
   }
 
@@ -310,9 +382,13 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
     return next(
       new AppError(
-        'There was error sending email please try again later !',
+        'There was an error sending email please try again later !',
         500
-      )
+      ),
+      res.status(500).json({
+        status: 'fail',
+        message: 'There was an error sending email please try again later !',
+      })
     );
   }
 });
@@ -341,11 +417,23 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new AppError('Your token is invalid or expired !', 400));
+    return next(
+      new AppError('Your token is invalid or expired !', 400),
+      res.status(400).json({
+        status: 'fail',
+        message: 'Your token is invalid or expired !',
+      })
+    );
   }
 
   if (req.body.password !== req.body.passwordConfirm) {
-    return next(new AppError('Both passwords should be same !', 400));
+    return next(
+      new AppError('Both passwords should be same !', 400),
+      res.status(400).json({
+        status: 'fail',
+        message: 'Both passwords should be same !',
+      })
+    );
   }
 
   user.password = req.body.password;
@@ -355,15 +443,38 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   signInUser(user, 201, res);
-  return next(new AppError('Password has been Updated !', 401));
+  return next(
+    new AppError('Password has been Updated !', 401),
+    res.status(401).json({
+      status: 'fail',
+      message: 'Password has been Updated !',
+    })
+  );
 });
 
 exports.updatePass = catchAsync(async (req, res, next) => {
   const user = await Customer.findById(req.user.id).select('+password');
 
   if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
-    return next(new AppError('Your current password is incorrect!', 401));
+    return next(
+      res.status(401).json({
+        status: 'fail',
+        message: '2-Your current password is incorrect!',
+      }),
+      new AppError('1-Your current password is incorrect!', 401)
+    );
   }
+
+  if (req.body.password !== req.body.passwordConfirm) {
+    return next(
+      new AppError('Both passwords should be same !', 400),
+      res.status(400).json({
+        status: 'fail',
+        message: 'Both passwords should be same !',
+      })
+    );
+  }
+
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();

@@ -27,7 +27,7 @@ exports.setProductUser = catchAsync(async (req, res, next) => {
 
   if (!BookingExists) {
     return res.status(403).json({
-      status: 'failed',
+      status: 'fail',
       message: "You can't give reviews to Un Booked car ...",
     });
   }
