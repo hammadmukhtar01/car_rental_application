@@ -14,6 +14,7 @@ router.route('/resetpassword/:token').patch(customerauthController.resetPassword
 router.route('/forgotpassword').post(customerauthController.forgotPassword);
 router.route('/delete/:id').delete(customerController.deleteCustomer);
 router.patch('/update/:id', customerauthController.updateStatus);
+router.patch('/updateprofile/:id', customerauthController.updateCustomerProfile);
 
 // router.patch('/emailconfirm/:token', customerauthController.emailConfirm);
 
