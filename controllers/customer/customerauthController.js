@@ -342,17 +342,13 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(
-      // new AppError(
-      //   'User with this email not found please enter valid one !',
-      //   404
-      // )
       new AppError(
-        'User with this email not found please enter valid one !',
+        'Email not found. Please enter a valid email address.',
         404
       ),
       res.status(404).json({
         status: 'fail',
-        message: 'User with this email not found please enter valid one !',
+        message: 'Email not found. Please enter a valid email address.',
       })
     );
   }
@@ -361,7 +357,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  const resetURL = `localhost:3000/resetPassword/${resetToken}`;
+  const resetURL = `https://milelecarrental.com/resetpassword/${resetToken}`;
 
   const message = `Forgot your password? Click the given link below for the new password: ${resetURL} \n If you don\'t do this, please ignore this email`;
 
@@ -373,7 +369,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     });
     res.status(200).json({
       status: 'success',
-      message: 'Token sent to the email provided',
+      message: 'Token sent to the provided email.',
     });
   } catch (err) {
     user.passwordResetToken = undefined;
@@ -382,7 +378,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
     return next(
       new AppError(
-        'There was an error sending email please try again later !',
+        'There was an error sending email please try again later-!',
         500
       ),
       res.status(500).json({
