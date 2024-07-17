@@ -138,17 +138,19 @@ exports.signup = catchAsync(async (req, res, next) => {
     });
 
     await sendThankYouEmail(newUser);
+    req.user = newUser;
+    req.token = signInNewUser(newUser._id, 201, res);
 
-    signInNewUser(newUser, 201, res, 'Logged-in successfully!');
+    next();
 
-    // res.status(201).json({
-    //   status: 'success',
-    //   data: {
-    //     newUser,
-    //   },
-    //   message:
-    //     'Thank you for signing up! Check your email for a welcome message.',
-    // });
+    res.status(201).json({
+      status: 'success',
+      data: {
+        newUser,
+      },
+      message:
+        'Thank you for signing up! Check your email for a welcome message.',
+    });
   } catch (err) {
     next(err);
   }
