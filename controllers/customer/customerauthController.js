@@ -84,7 +84,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     });
     if (customerEmailCheck) {
       console.log('dThis email is already registered asds');
-      
+
       return next(
         new AppError('This email is already registered as customer.', 400),
         res.status(400).json({
@@ -253,6 +253,19 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.verifyProfileOwnership = (req, res, next) => {
+  if (req.params.id !== req.user.id) {
+    return next(
+      new AppError('You do not have permission to access this profile', 403),
+      res.status(401).json({
+        status: 'fail',
+        message: 'You do not have permission to access this profile',
+      })
+    );
+  }
+  next();
+};
+
 exports.restrictTo = function (...roles) {
   return function (req, res, next) {
     if (!roles.includes(req.user.role)) {
@@ -344,10 +357,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new AppError(
-        'Email not found. Please enter a valid email address.',
-        404
-      ),
+      new AppError('Email not found. Please enter a valid email address.', 404),
       res.status(404).json({
         status: 'fail',
         message: 'Email not found. Please enter a valid email address.',
