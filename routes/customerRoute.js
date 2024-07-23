@@ -10,11 +10,16 @@ router.route('/all').get(customerController.getAllUsers);
 router.route('/create').post(customerauthController.signup);
 
 router.route('/login').post(customerauthController.login);
-router.route('/resetpassword/:token').patch(customerauthController.resetPassword);
+router
+  .route('/resetpassword/:token')
+  .patch(customerauthController.resetPassword);
 router.route('/forgotpassword').post(customerauthController.forgotPassword);
 router.route('/delete/:id').delete(customerController.deleteCustomer);
 router.patch('/update/:id', customerauthController.updateStatus);
-router.patch('/updateprofile/:id', customerauthController.updateCustomerProfile);
+router.patch(
+  '/updateprofile/:id',
+  customerauthController.updateCustomerProfile
+);
 
 // router.patch('/emailconfirm/:token', customerauthController.emailConfirm);
 
@@ -26,6 +31,10 @@ router.patch(
 
 router
   .route('/profile/:id')
-  .get(customerauthController.protect, customerController.getProfile);
+  .get(
+    customerauthController.protect,
+    customerauthController.verifyProfileOwnership,
+    customerController.getProfile
+  );
 
 module.exports = router;
