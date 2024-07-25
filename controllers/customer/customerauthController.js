@@ -127,6 +127,9 @@ exports.signup = catchAsync(async (req, res, next) => {
     //   return next(new AppError('This phone number is already registered !', 400));
     // }
 
+    const profilePhoto = req.file ? req.file.path : null;
+    console.log("profilePhoto", profilePhoto)
+
     const newUser = await Customer.create({
       fName: req.body.fName,
       lName: req.body.lName,
@@ -136,6 +139,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordConfirm: req.body.passwordConfirm,
       nationality: req.body.nationality,
       customerIdFromSpeed: req.body.customerIdFromSpeed,
+      customerProfileImg: profilePhoto
     });
 
     await sendThankYouEmail(newUser);

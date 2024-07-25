@@ -69,6 +69,11 @@ const customerSchema = mongoose.Schema(
       default: null,
     },
 
+    customerProfileImg: {
+      type: String,
+      default: null,
+    },
+
     creditPoints: {
       type: Number,
       default: 0,
