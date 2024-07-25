@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.route('/createCar').post(adminauthController.protect,upload.array('carImages', 12), carController.createCar, );
+router.route('/createCar').post(upload.array('carImages', 12), carController.createCar, );
 router.route('/updateCar/:id').patch(adminauthController.protect, carController.updateCar);
 
 // router.route('/deleteCar/:id').delete(carController.deleteSingleCar);

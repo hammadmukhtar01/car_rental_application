@@ -38,6 +38,7 @@ const signInUser = (user, statuscode, res, successMessage) => {
       role: user.role,
       status: user.isVerified,
       customerIdFromSpeed: user.customerIdFromSpeed,
+      customerProfileImg: user.customerProfileImg,
       _id: user._id,
     },
   };
