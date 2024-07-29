@@ -35,7 +35,7 @@ router
   .route('/profile/:id')
   .get(
     customerauthController.protect,
-    customerauthController.verifyProfileOwnership,
+    // customerauthController.verifyProfileOwnership,
     customerController.getProfile
   );
 
