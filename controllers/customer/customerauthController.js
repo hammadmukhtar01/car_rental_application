@@ -128,9 +128,10 @@ exports.signup = catchAsync(async (req, res, next) => {
     //   return next(new AppError('This phone number is already registered !', 400));
     // }
 
-    const profileImageURL = `https://milele-car-rental-api.vercel.app/uploads/${req.file.filename}`;
-
-    console.log('profileImageURL : ', profileImageURL);
+    let imageBase64;
+    if (req.file) {
+      imageBase64 = Buffer.from(req.file.buffer).toString('base64');
+    }
 
     const newUser = await Customer.create({
       fName: req.body.fName,
@@ -141,7 +142,8 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordConfirm: req.body.passwordConfirm,
       nationality: req.body.nationality,
       customerIdFromSpeed: req.body.customerIdFromSpeed,
-      customerProfileImg: profileImageURL,
+      customerProfileImg: `data:image/jpeg;base64,${imageBase64}`
+      // customerProfileImg: `data:${req.file.mimetype};base64,${imageBase64}`
     });
 
     await sendThankYouEmail(newUser);
