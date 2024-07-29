@@ -2,23 +2,9 @@ const express = require('express');
 const customerController = require('../controllers/customer/customerController');
 const customerauthController = require('../controllers/customer/customerauthController');
 const multer = require('multer');
-const path = require('path');
 const router = express.Router();
-
-// Multer Config 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); 
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const extension = path.extname(file.originalname);
-    const filename = `${uniqueSuffix}.${extension}`;
-    cb(null, filename); 
-  },
-});
-
-const upload = multer({ storage });
+const storage = multer.memoryStorage(); 
+const upload = multer({ storage: storage });
 
 router.route('/all').get(customerController.getAllUsers);
 
