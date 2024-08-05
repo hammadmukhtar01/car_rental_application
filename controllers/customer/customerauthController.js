@@ -192,10 +192,10 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user1 || !(await user1.correctPassword(password, user1.password))) {
     // console.log('hi');
     return next(
-      new AppError('Email or password is not correct!', 401),
+      new AppError('Email/Phone No. or password is incorrect!', 401),
       res.status(401).json({
         status: 'fail',
-        message: 'Email or password is not correct!',
+        message: 'Email/Phone No. or password is incorrect!',
       })
     );
   }
