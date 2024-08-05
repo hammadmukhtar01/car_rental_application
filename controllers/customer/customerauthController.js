@@ -5,6 +5,7 @@ const Customer = require('../../models/customerModel');
 const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
 const sendEmail = require('../../utils/email');
+const { parsePhoneNumberFromString } = require('libphonenumber-js');
 
 const signInToken = function (id) {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -65,8 +66,8 @@ const signInNewUser = (user, statuscode, res) => {
   user.password = undefined;
 };
 
-const sendThankYouEmail = async (user) => {
-  const message = `Thank you for signing up, ${user.fName} ${user.lName}! We appreciate your registration with Milele Car Rental System. \nClick the below link to visit our website:\nhttps://www.milelecarrental.com`;
+const sendThankYouEmail = async (user , textPassword) => {
+  const message = `Thank you for signing up, ${user.fName} ${user.lName}! We appreciate your registration with Milele Car Rental System. \nPassword to access your account is: "${textPassword}" \n\nClick the below link to visit our website:\nhttps://www.milelecarrental.com`;
 
   try {
     await sendEmail({
@@ -85,7 +86,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       email: req.body.email,
     });
     if (customerEmailCheck) {
-      console.log('dThis email is already registered asds');
+      console.log('This email is already registered asds');
 
       return next(
         new AppError('This email is already registered as customer.', 400),
@@ -120,18 +121,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       );
     }
 
-    // const customerPhoneNumCheck = await Customer.findOne({
-    //   phoneNumber: req.body.phoneNumber,
-    // });
-
-    // if (customerPhoneNumCheck) {
-    //   return next(new AppError('This phone number is already registered !', 400));
-    // }
-
-    // let imageBase64;
-    // if (req.file) {
-    //   imageBase64 = Buffer.from(req.file.buffer).toString('base64');
-    // }
+    const plainPassword = req.body.password;
 
     const newUser = await Customer.create({
       fName: req.body.fName,
@@ -142,11 +132,9 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordConfirm: req.body.passwordConfirm,
       nationality: req.body.nationality,
       customerIdFromSpeed: req.body.customerIdFromSpeed,
-      // customerProfileImg: `data:image/jpeg;base64,${imageBase64}`
-      // customerProfileImg: `data:${req.file.mimetype};base64,${imageBase64}`
     });
 
-    await sendThankYouEmail(newUser);
+    await sendThankYouEmail(newUser, plainPassword);
     req.user = newUser;
     req.token = signInNewUser(newUser._id, 201, res);
 
@@ -166,31 +154,41 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+  const { emailPhoneNum, password } = req.body;
 
-  if (!email || !password) {
+  if (!emailPhoneNum || !password) {
     // console.log('hi');
+
     return next(
-      new AppError('Email or password is not entered!', 400),
+      new AppError('Email / phone number and password must be provided!', 400),
       res.status(400).json({
         status: 'fail',
-        message: 'Email or password is not entered!',
+        message: 'Email / phone number and password must be provided!',
       })
     );
   }
 
-  if (email.includes('@')) {
-    useremail = req.body.email;
-  } else if (!email.includes('@')) {
-    phoneNumber = req.body.email;
+  let user1;
+  if (emailPhoneNum.includes('@')) {
+    user1 = await Customer.findOne({ email: emailPhoneNum }).select('+password');
+    console.log('@@@@@@@ === ', user1);
+  } else {
+    const parsedPhoneNumber = parsePhoneNumberFromString(emailPhoneNum, 'AE');
+    if (!parsedPhoneNumber || !parsedPhoneNumber.isValid()) {
+      return next(new AppError('Invalid phone number format!', 400));
+    }
+    const formattedPhoneNumber = parsedPhoneNumber.format('E.164');
+    console.log('formattedPhoneNumber : ', formattedPhoneNumber);
+    user1 = await Customer.findOne({
+      phoneNumber: formattedPhoneNumber,
+    }).select('+password');
+    console.log('parsedPhoneNumber parsedPhoneNumber === ', user1);
   }
-
-  const user1 = await Customer.findOne({ email }).select('+password');
 
   // const user1 = await Customer.findOne({
   //   $or: [{ email: useremail }, { phoneNumber: phoneNumber }],
   // }).select('+password');
-
+  console.log('user1 === ', user1);
   if (!user1 || !(await user1.correctPassword(password, user1.password))) {
     // console.log('hi');
     return next(
