@@ -193,7 +193,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   if (!user1 || !(await user1.correctPassword(password, user1.password))) {
     return next(
-      new AppError('Email/Phone No. or password is incorrect!!!!!!', 401),
+      new AppError('Email/Phone No. or password is incorrect!', 401),
       res.status(401).json({
         status: 'fail',
         message: 'Email/Phone No. or password is incorrect!',
@@ -389,7 +389,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     });
     res.status(200).json({
       status: 'success',
-      message: 'Token sent to the provided email.',
+      message: 'Password Reset email has been sent to the provided email address.',
     });
   } catch (err) {
     user.passwordResetToken = undefined;
@@ -475,9 +475,9 @@ exports.updatePass = catchAsync(async (req, res, next) => {
     return next(
       res.status(401).json({
         status: 'fail',
-        message: '2-Your current password is incorrect!',
+        message: 'Your current password is incorrect!',
       }),
-      new AppError('1-Your current password is incorrect!', 401)
+      new AppError('Your current password is incorrect!', 401)
     );
   }
 
