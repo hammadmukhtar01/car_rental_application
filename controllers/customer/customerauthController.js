@@ -389,7 +389,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     });
     res.status(200).json({
       status: 'success',
-      message: 'Password Reset email has been sent to the provided email address.',
+      message: 'Password reset link has been sent to the provided email.',
     });
   } catch (err) {
     user.passwordResetToken = undefined;
