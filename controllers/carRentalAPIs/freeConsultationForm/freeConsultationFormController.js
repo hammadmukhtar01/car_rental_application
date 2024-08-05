@@ -3,13 +3,26 @@ const catchAsync = require('../../../utils/catchAsync');
 const AppError = require('../../../utils/appError');
 const sendEmail = require('../../../utils/email');
 const factory = require('../../factoryHandler');
+const { parsePhoneNumberFromString } = require('libphonenumber-js');
 
 exports.createFreeConsultationForm = catchAsync(async (req, res, next) => {
   const { customerName, phoneNumber } = req.body;
 
+  const phoneNumberObj = parsePhoneNumberFromString(`+${phoneNumber}`);
+
+  if (!phoneNumberObj || !phoneNumberObj.isValid()) {
+    return next(
+      new AppError('Invalid Phone No.!', 400),
+      res.status(400).json({
+        status: 'fail',
+        message: 'Invalid Phone No.!',
+      })
+    );
+  }
+
   const newFreeConsultationForm = await FreeConsultationForm({
     customerName,
-    phoneNumber,
+    phoneNumber: phoneNumberObj?.number,
   });
 
   const FreeConsultationFormData = await newFreeConsultationForm.save();
@@ -34,8 +47,15 @@ exports.createFreeConsultationForm = catchAsync(async (req, res, next) => {
   } catch (err) {
     return next(
       new AppError(
-        'There was an error sending the email. Please try again later.',
-        500
+        new AppError(
+          'There was an error sending the email. Please try again later.',
+          500
+        ),
+        res.status(500).json({
+          status: 'fail',
+          message:
+            'There was an error sending the email. Please try again later.',
+        })
       )
     );
   }

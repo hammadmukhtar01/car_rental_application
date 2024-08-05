@@ -86,13 +86,12 @@ exports.signup = catchAsync(async (req, res, next) => {
       email: req.body.email,
     });
     if (customerEmailCheck) {
-      console.log('This email is already registered asds');
 
       return next(
-        new AppError('This email is already registered as customer.', 400),
+        new AppError('This email is already registered.', 400),
         res.status(400).json({
           status: 'fail',
-          message: 'This email is already registered as customer.',
+          message: 'This email is already registered.',
         })
       );
     }
@@ -123,11 +122,17 @@ exports.signup = catchAsync(async (req, res, next) => {
 
     const plainPassword = req.body.password;
 
+    const parsedPhoneNumber = parsePhoneNumberFromString(req.body.phoneNumber);
+    if (!parsedPhoneNumber || !parsedPhoneNumber.isValid()) {
+      console.log('Invalid phone number.');
+      return next(new AppError('Please enter a valid phone number.', 400));
+    }
+
     const newUser = await Customer.create({
       fName: req.body.fName,
       lName: req.body.lName,
       email: req.body.email,
-      phoneNumber: req.body.phoneNumber,
+      phoneNumber: parsedPhoneNumber.number,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
       nationality: req.body.nationality,
@@ -171,28 +176,24 @@ exports.login = catchAsync(async (req, res, next) => {
   let user1;
   if (emailPhoneNum.includes('@')) {
     user1 = await Customer.findOne({ email: emailPhoneNum }).select('+password');
-    console.log('@@@@@@@ === ', user1);
   } else {
     const parsedPhoneNumber = parsePhoneNumberFromString(emailPhoneNum, 'AE');
     if (!parsedPhoneNumber || !parsedPhoneNumber.isValid()) {
-      return next(new AppError('Invalid phone number format!', 400));
+      return next(new AppError('Invalid phone number format!', 400),
+      res.status(400).json({
+        status: 'fail',
+        message: 'Invalid phone number format!',
+      }));
     }
     const formattedPhoneNumber = parsedPhoneNumber.format('E.164');
-    console.log('formattedPhoneNumber : ', formattedPhoneNumber);
     user1 = await Customer.findOne({
       phoneNumber: formattedPhoneNumber,
     }).select('+password');
-    console.log('parsedPhoneNumber parsedPhoneNumber === ', user1);
   }
 
-  // const user1 = await Customer.findOne({
-  //   $or: [{ email: useremail }, { phoneNumber: phoneNumber }],
-  // }).select('+password');
-  console.log('user1 === ', user1);
   if (!user1 || !(await user1.correctPassword(password, user1.password))) {
-    // console.log('hi');
     return next(
-      new AppError('Email/Phone No. or password is incorrect!', 401),
+      new AppError('Email/Phone No. or password is incorrect!!!!!!', 401),
       res.status(401).json({
         status: 'fail',
         message: 'Email/Phone No. or password is incorrect!',
