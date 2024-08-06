@@ -32,7 +32,7 @@ router.patch(
 );
 
 router.route('/profile/:id').get(
-  customerauthController.protect,
+  // customerauthController.protect,
   // customerauthController.verifyProfileOwnership,
   customerController.getProfile
 );
