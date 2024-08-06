@@ -66,7 +66,7 @@ const signInNewUser = (user, statuscode, res) => {
   user.password = undefined;
 };
 
-const sendThankYouEmail = async (user , textPassword) => {
+const sendThankYouEmail = async (user, textPassword) => {
   const message = `Thank you for signing up, ${user.fName} ${user.lName}! We appreciate your registration with Milele Car Rental System. \nPassword to access your account is: "${textPassword}" \n\nClick the below link to visit our website:\nhttps://www.milelecarrental.com`;
 
   try {
@@ -86,7 +86,6 @@ exports.signup = catchAsync(async (req, res, next) => {
       email: req.body.email,
     });
     if (customerEmailCheck) {
-
       return next(
         new AppError('This email is already registered.', 400),
         res.status(400).json({
@@ -122,17 +121,11 @@ exports.signup = catchAsync(async (req, res, next) => {
 
     const plainPassword = req.body.password;
 
-    const parsedPhoneNumber = parsePhoneNumberFromString(req.body.phoneNumber);
-    if (!parsedPhoneNumber || !parsedPhoneNumber.isValid()) {
-      console.log('Invalid phone number.');
-      return next(new AppError('Please enter a valid phone number.', 400));
-    }
-
     const newUser = await Customer.create({
       fName: req.body.fName,
       lName: req.body.lName,
       email: req.body.email,
-      phoneNumber: parsedPhoneNumber.number,
+      phoneNumber: req.body.phoneNumber,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
       nationality: req.body.nationality,
@@ -175,15 +168,19 @@ exports.login = catchAsync(async (req, res, next) => {
 
   let user1;
   if (emailPhoneNum.includes('@')) {
-    user1 = await Customer.findOne({ email: emailPhoneNum }).select('+password');
+    user1 = await Customer.findOne({ email: emailPhoneNum }).select(
+      '+password'
+    );
   } else {
     const parsedPhoneNumber = parsePhoneNumberFromString(emailPhoneNum, 'AE');
     if (!parsedPhoneNumber || !parsedPhoneNumber.isValid()) {
-      return next(new AppError('Invalid phone number format!', 400),
-      res.status(400).json({
-        status: 'fail',
-        message: 'Invalid phone number format!',
-      }));
+      return next(
+        new AppError('Invalid phone number format!', 400),
+        res.status(400).json({
+          status: 'fail',
+          message: 'Invalid phone number format!',
+        })
+      );
     }
     const formattedPhoneNumber = parsedPhoneNumber.format('E.164');
     user1 = await Customer.findOne({
