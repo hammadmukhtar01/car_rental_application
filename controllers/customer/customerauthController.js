@@ -67,16 +67,18 @@ const signInNewUser = (user, statuscode, res) => {
 };
 
 const sendThankYouEmail = async (user, textPassword) => {
-  const message = `Thank you for signing up, ${user.fName} ${user.lName}! We appreciate your registration with Milele Car Rental System. \nPassword to access your account is: "${textPassword}" \n\nClick the below link to visit our website:\nhttps://www.milelecarrental.com`;
-
   try {
     await sendEmail({
-      email: user.email,
+      email: user?.email,
       subject: 'Thank You for Signing Up!',
-      message,
+      fname: user?.fName,
+      lname: user?.lName,
+      password: textPassword,
+      type: 'signup',
+      isHtml: true,
     });
   } catch (err) {
-    new AppError('Error sending thank-you email:', err);
+    new AppError('Error sending thank-you email while signup:', err);
   }
 };
 
