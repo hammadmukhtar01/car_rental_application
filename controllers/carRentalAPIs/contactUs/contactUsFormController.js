@@ -27,6 +27,7 @@ exports.createContactUsRequest = catchAsync(async (req, res, next) => {
       message: customerMessage,
       fname: fname,
       lname: lname,
+      type: 'contactus',
       isHtml: true,
     });
 
@@ -34,7 +35,6 @@ exports.createContactUsRequest = catchAsync(async (req, res, next) => {
       email: [
         'milelecarrental@gmail.com',
         'hammad.mukhtar@milele.com',
-        // 'hammadmukhtar1122@gmail.com',
       ],
       subject: 'New Contact Us Inquiry',
       message: rentalTeamMessage,
