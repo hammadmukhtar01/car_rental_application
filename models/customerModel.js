@@ -35,6 +35,8 @@ const customerSchema = mongoose.Schema(
         message: 'Phone Number is not valid',
       },
       required: [true, 'Phone Number is missing.'],
+      unique: [true, 'Phone Number must not be used before'],
+
     },
     password: {
       type: String,
