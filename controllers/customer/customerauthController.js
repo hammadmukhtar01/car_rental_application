@@ -109,6 +109,31 @@ exports.signup = catchAsync(async (req, res, next) => {
       );
     }
 
+      const customerPhoneNumCheck = await Customer.findOne({
+        phoneNumber: req.body.phoneNumber,
+      });
+      if (customerPhoneNumCheck) {
+        return next(
+          new AppError('This phone Number is already registered.', 400),
+          res.status(400).json({
+            status: 'fail',
+            message: 'This phone Number is already registered.',
+          })
+        );
+      }
+  
+      if (req.body.password !== req.body.passwordConfirm) {
+        console.log('different passwords');
+  
+        return next(
+          new AppError('Passwords do not match', 400),
+          res.status(400).json({
+            status: 'fail',
+            message: 'Passwords do not match!',
+          })
+        );
+      }
+  
     if (!req.body.nationality) {
       console.log('Please Choose Nationality.');
 
