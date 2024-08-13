@@ -291,6 +291,24 @@ exports.restrictTo = function (...roles) {
   };
 };
 
+exports.findCustomerByEmail = async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) {
+      return res.status(400).json({ message: 'Email required.' });
+    }
+
+    const customer = await Customer.findOne({ email: email });
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found.' });
+    }
+
+    res.status(200).json({ customer: customer });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 exports.updateStatus = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const { isVerified } = req.body;
