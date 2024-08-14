@@ -6,6 +6,7 @@ const catchAsync = require('../../utils/catchAsync');
 const AppError = require('../../utils/appError');
 const sendEmail = require('../../utils/email');
 const { parsePhoneNumberFromString } = require('libphonenumber-js');
+const axios = require('axios');
 
 const signInToken = function (id) {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -83,6 +84,7 @@ const sendThankYouEmail = async (user, textPassword) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+  let newUser;
   try {
     const customerEmailCheck = await Customer.findOne({
       email: req.body.email,
@@ -93,6 +95,49 @@ exports.signup = catchAsync(async (req, res, next) => {
         res.status(400).json({
           status: 'fail',
           message: 'This email is already registered.',
+        })
+      );
+    }
+
+    const normalizedContactNum = req.body.phoneNumber.startsWith('+')
+      ? req.body.phoneNumber
+      : `+${req.body.phoneNumber}`;
+
+    const parsedPhoneNumber = parsePhoneNumberFromString(
+      normalizedContactNum,
+      req.body.nationality?.value
+    );
+
+    // Validate the phone number
+    if (!parsedPhoneNumber || !parsedPhoneNumber.isValid()) {
+      console.log('Invalid phone number - ', req.body.phoneNumber);
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Please enter a valid phone number.',
+      });
+    }
+
+    if (req.body.password !== req.body.passwordConfirm) {
+      console.log('different passwords');
+
+      return next(
+        new AppError('Passwords do not match', 400),
+        res.status(400).json({
+          status: 'fail',
+          message: 'Passwords do not match!',
+        })
+      );
+    }
+
+    const customerPhoneNumCheck = await Customer.findOne({
+      phoneNumber: req.body.phoneNumber,
+    });
+    if (customerPhoneNumCheck) {
+      return next(
+        new AppError('This phone Number is already registered.', 400),
+        res.status(400).json({
+          status: 'fail',
+          message: 'This phone Number is already registered.',
         })
       );
     }
@@ -109,31 +154,6 @@ exports.signup = catchAsync(async (req, res, next) => {
       );
     }
 
-      const customerPhoneNumCheck = await Customer.findOne({
-        phoneNumber: req.body.phoneNumber,
-      });
-      if (customerPhoneNumCheck) {
-        return next(
-          new AppError('This phone Number is already registered.', 400),
-          res.status(400).json({
-            status: 'fail',
-            message: 'This phone Number is already registered.',
-          })
-        );
-      }
-  
-      if (req.body.password !== req.body.passwordConfirm) {
-        console.log('different passwords');
-  
-        return next(
-          new AppError('Passwords do not match', 400),
-          res.status(400).json({
-            status: 'fail',
-            message: 'Passwords do not match!',
-          })
-        );
-      }
-  
     if (!req.body.nationality) {
       console.log('Please Choose Nationality.');
 
@@ -148,7 +168,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 
     const plainPassword = req.body.password;
 
-    const newUser = await Customer.create({
+    newUser = await Customer.create({
       fName: req.body.fName,
       lName: req.body.lName,
       email: req.body.email,
@@ -159,6 +179,57 @@ exports.signup = catchAsync(async (req, res, next) => {
       customerIdFromSpeed: req.body.customerIdFromSpeed,
     });
 
+    const token = process.env.SPEED_LOGIN_BEARER_TOKEN;
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+    console.log('newUser created in OWN DB : ', newUser);
+
+    const speedData = {
+      firstName: newUser.fName,
+      lastName: newUser.lName,
+      mobileNo: newUser.phoneNumber,
+      email: newUser.email,
+      nationality: newUser.nationality?.value,
+      identityDocuments: [
+        {
+          documentNo: '0',
+          identityDocumentType: 4,
+          issuedBy: 'United Arab Emirates (the)',
+        },
+      ],
+    };
+
+    const speedResponse = await axios.post(
+      'https://app.speedautosystems.com/api/services/app/person/CreateOrUpdatePerson',
+      { person: speedData },
+      { headers }
+    );
+    console.log('speedResponse ------ : ', speedResponse?.data);
+
+    speedCustomerIDFromAPI = speedResponse?.data?.result;
+    console.log('speedCustomerIDFromAPI ----- : ', speedCustomerIDFromAPI);
+
+    if (!speedResponse?.data?.success) {
+      await Customer.findByIdAndDelete(newUser._id);
+      throw (
+        (new AppError('Failed to create user in Speed system', 500),
+        res.status(500).json({
+          status: 'fail',
+          message: 'Failed to create user in Speed system',
+        }))
+      );
+    }
+
+    const updatedUserData = await Customer.findByIdAndUpdate(
+      newUser._id,
+      {
+        customerIdFromSpeed: speedResponse.data.result,
+      },
+      { new: true }
+    );
+
     await sendThankYouEmail(newUser, plainPassword);
     req.user = newUser;
     req.token = signInNewUser(newUser._id, 201, res);
@@ -168,13 +239,25 @@ exports.signup = catchAsync(async (req, res, next) => {
     res.status(201).json({
       status: 'success',
       data: {
-        newUser,
+        updatedUserData,
       },
       message:
         'Thank you for signing up! Check your email for a welcome message.',
     });
   } catch (err) {
-    next(err);
+    console.error('Error during signup:', err);
+    if (newUser) {
+      await Customer.findByIdAndDelete(newUser._id);
+      console.log('Rollback complete: Newly created user has been deleted.');
+    }
+    if (err instanceof AppError) {
+      res.status(err.statusCode).json({
+        status: 'fail',
+        message: err.message,
+      });
+    } else {
+      next(err);
+    }
   }
 });
 
