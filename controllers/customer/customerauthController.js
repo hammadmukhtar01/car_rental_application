@@ -72,8 +72,8 @@ const sendThankYouEmail = async (user, textPassword) => {
     await sendEmail({
       email: user?.email,
       subject: 'Thank You for Signing Up!',
-      fname: user?.fName,
-      lname: user?.lName,
+      fName: user?.fName,
+      lName: user?.lName,
       password: textPassword,
       type: 'signup',
       isHtml: true,

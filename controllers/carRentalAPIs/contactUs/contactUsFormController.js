@@ -5,11 +5,11 @@ const sendEmail = require('../../../utils/email');
 const factory = require('../../factoryHandler');
 
 exports.createContactUsRequest = catchAsync(async (req, res, next) => {
-  const { fname, lname, email, phoneNumber, comment } = req.body;
+  const { fName, lName, email, phoneNumber, comment } = req.body;
 
   const newContactUsForm = await ContactUsForm({
-    fname,
-    lname,
+    fName,
+    lName,
     email,
     phoneNumber,
     comment,
@@ -17,16 +17,16 @@ exports.createContactUsRequest = catchAsync(async (req, res, next) => {
 
   await newContactUsForm.save();
 
-  const customerMessage = `Thank you ${fname} ${lname}, for contacting Milele Car Rental team. We will get back to you soon!!!`;
-  const rentalTeamMessage = `Dear rental team, a new customer just filled the Contact Us form with following details:\n\nCustomer: \t"${fname} ${lname}" \nEmail: \t\t${email}, \nPhone No.: \t${phoneNumber}, \nComments: \t"${comment}"`;
+  const customerMessage = `Thank you ${fName} ${lName}, for contacting Milele Car Rental team. We will get back to you soon!!!`;
+  const rentalTeamMessage = `Dear rental team, a new customer just filled the Contact Us form with following details:\n\nCustomer: \t"${fName} ${lName}" \nEmail: \t\t${email}, \nPhone No.: \t${phoneNumber}, \nComments: \t"${comment}"`;
 
   try {
     await sendEmail({
       email: email,
       subject: 'Thank you for Contacting Us',
       message: customerMessage,
-      fname: fname,
-      lname: lname,
+      fName: fName,
+      lName: lName,
       type: 'contactus',
       isHtml: true,
     });
@@ -38,8 +38,8 @@ exports.createContactUsRequest = catchAsync(async (req, res, next) => {
       ],
       subject: 'New Contact Us Inquiry',
       message: rentalTeamMessage,
-      fname: 'Rental',
-      lname: 'Team',
+      fName: 'Rental',
+      lName: 'Team',
       isHtml: false,
     });
 

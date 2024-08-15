@@ -6,8 +6,8 @@ const LeaseNowUserData = require('../../../models/leaseNowUserDataModel');
 
 exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
   const {
-    fname,
-    lname,
+    fName,
+    lName,
     email,
     phoneNumber,
     comment,
@@ -17,8 +17,8 @@ exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
   } = req.body;
 
   const newLeaseNowUserData = await LeaseNowUserData({
-    fname,
-    lname,
+    fName,
+    lName,
     email,
     phoneNumber,
     comment,
@@ -29,8 +29,8 @@ exports.createLeaseNowuserData = catchAsync(async (req, res, next) => {
 
   await newLeaseNowUserData.save();
 
-  const customerMessage = `Dear ${fname} ${lname}, your leasing details has been sent to our rental department. We will get back to you soon! Thank you!`;
-  const teamMessage = `We just received a query from customer for Car Leasing. Details are:\n\nCustomer Name: \t${fname}, ${lname}\nCustomer Email: \t${email}\nPhone Number: \t${phoneNumber}\nComments: \t${comment}
+  const customerMessage = `Dear ${fName} ${lName}, your leasing details has been sent to our rental department. We will get back to you soon! Thank you!`;
+  const teamMessage = `We just received a query from customer for Car Leasing. Details are:\n\nCustomer Name: \t${fName}, ${lName}\nCustomer Email: \t${email}\nPhone Number: \t${phoneNumber}\nComments: \t${comment}
   \nEstimated Car Price: \t${estCarPrice}\nNo. Of Months: \t${durationVal}\nDown Payment: ${downPaymentVal}%`;
 
   try {
