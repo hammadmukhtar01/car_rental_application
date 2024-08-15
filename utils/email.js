@@ -27,8 +27,8 @@ const sendMail = async (options) => {
         );
         let htmlContent = fs.readFileSync(templatePath, 'utf8');
 
-        htmlContent = htmlContent.replace('{{fname}}', options.fname);
-        htmlContent = htmlContent.replace('{{lname}}', options.lname);
+        htmlContent = htmlContent.replace('{{fName}}', options.fName);
+        htmlContent = htmlContent.replace('{{lName}}', options.lName);
 
         let dynamicContent = '';
 

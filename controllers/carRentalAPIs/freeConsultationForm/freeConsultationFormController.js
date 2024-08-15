@@ -34,8 +34,8 @@ exports.createFreeConsultationForm = catchAsync(async (req, res, next) => {
       email: ['hammad.mukhtar@milele.com', 'milelecarrental@gmail.com'],
       subject: 'New Consultation Inquiry',
       message,
-      fname: 'Rental',
-      lname: 'Team',
+      fName: 'Rental',
+      lName: 'Team',
       isHtml: false,
     });
     res.status(200).json({

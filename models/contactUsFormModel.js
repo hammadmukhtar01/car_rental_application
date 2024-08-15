@@ -3,13 +3,13 @@ const validator = require('validator');
 
 const contactUsFormSchema = mongoose.Schema(
   {
-    fname: {
+    fName: {
       type: String,
       minlength: [3, 'must have greater or equal to 3 length'],
       maxlength: [50, 'must have less or equal to 50 length'],
       required: [true, 'First Name is missing'],
     },
-    lname: {
+    lName: {
       type: String,
       minlength: [3, 'must have greater or equal to 3 length'],
       maxlength: [50, 'must have less or equal to 50 length'],
