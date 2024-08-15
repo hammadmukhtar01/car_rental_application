@@ -36,7 +36,7 @@ const signInUser = (user, statuscode, res, successMessage) => {
     data: {
       fName: user.fName,
       lName: user.lName,
-      nationality: user.nationality?.value,
+      nationality: user.nationality?.label,
       role: user.role,
       status: user.isVerified,
       customerIdFromSpeed: user.customerIdFromSpeed,
