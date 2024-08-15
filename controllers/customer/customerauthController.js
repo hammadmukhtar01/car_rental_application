@@ -36,7 +36,7 @@ const signInUser = (user, statuscode, res, successMessage) => {
     data: {
       fName: user.fName,
       lName: user.lName,
-      nationality: user.nationality.label,
+      nationality: user.nationality?.value,
       role: user.role,
       status: user.isVerified,
       customerIdFromSpeed: user.customerIdFromSpeed,
@@ -200,6 +200,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         },
       ],
     };
+    console.log('speedData ------ : ', speedData);
 
     const speedResponse = await axios.post(
       'https://app.speedautosystems.com/api/services/app/person/CreateOrUpdatePerson',
