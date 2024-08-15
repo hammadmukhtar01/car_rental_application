@@ -191,7 +191,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       lastName: newUser.lName,
       mobileNo: newUser.phoneNumber,
       email: newUser.email,
-      nationality: newUser.nationality?.value,
+      nationality: newUser.nationality?.label,
       identityDocuments: [
         {
           documentNo: '0',
