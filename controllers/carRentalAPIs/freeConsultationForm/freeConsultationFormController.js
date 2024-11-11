@@ -4,6 +4,7 @@ const AppError = require('../../../utils/appError');
 const sendEmail = require('../../../utils/email');
 const factory = require('../../factoryHandler');
 const { parsePhoneNumberFromString } = require('libphonenumber-js');
+const axios = require('axios');
 
 exports.createFreeConsultationForm = catchAsync(async (req, res, next) => {
   const { customerName, phoneNumber } = req.body;
@@ -77,3 +78,27 @@ exports.getAllFreeConsultationForms = catchAsync(async (req, res, next) => {
 });
 
 exports.getSingleConsultationForm = factory.getOne(FreeConsultationForm);
+
+exports.getAllCountries = catchAsync(async (req, res, next) => {
+  let offset = 0;
+  const limit = 1000;
+
+  try {
+    const response = await axios.get(
+      `https://api.first.org/data/v1/countries?limit=${limit}&offset=${offset}`
+    );
+
+    const countries = Object.keys(response.data.data).map((key) => ({
+      label: response.data.data[key].country,
+      value: key,
+    }));
+
+    res.status(200).json({
+      status: 'success',
+      data: countries,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError('Error fetching country data', 500));
+  }
+});

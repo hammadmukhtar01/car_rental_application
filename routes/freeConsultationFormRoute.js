@@ -5,12 +5,13 @@ const freeConsultationFormController = require('../controllers/carRentalAPIs/fre
 router
   .route('/create')
   .post(freeConsultationFormController.createFreeConsultationForm);
-
 router
   .route('/all')
   .get(freeConsultationFormController.getAllFreeConsultationForms);
 router
   .route('/one/:id')
   .get(freeConsultationFormController.getSingleConsultationForm);
+
+router.route('/countries').get(freeConsultationFormController.getAllCountries);
 
 module.exports = router;
